@@ -3,11 +3,11 @@ package cifo.core;
 import java.util.ArrayList;
 
 public class Benchmark {
-	private static String results = "SEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,mean,stdDev,best,worst";
+	private static String results = "\nSEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,mean,stdDev,best,worst";
 	private static ParameterSet[] parameterSets;
 	
 	public static void main(String args[]) {
-		int fraction = 1;
+		int fraction = 8;
 		int denominator = 9;
 		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 2, 500);
 		parameterSets = ParameterSet.getPortion(fraction, denominator, fullSet);
