@@ -51,10 +51,10 @@ public class Benchmark {
 		}
 
 		public static ParameterSet[] generateParameterSets(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS) {
-			int[] populationSizes = {10,25,50,100};
+			int[] populationSizes = {10,25,75};
 			int[] neighborhoodSizes = {4};
-			double[] mutationProbablilities = {0.01, 0.05, 0.1, 0.25};
-			int[] tournamentSizes = {2,3,6,10};
+			double[] mutationProbablilities = {0.01, 0.05, 0.25};
+			int[] tournamentSizes = {2,3,6};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
 			for(int i = 0; i < populationSizes.length; i++) {
