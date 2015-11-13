@@ -8,15 +8,15 @@ public class Benchmark {
 	
 	public static void main(String args[]) {
 		int fraction = 1;
-		int denominator = 10;
-		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 100, 1, 2);
+		int denominator = 9;
+		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 100, 3, 1000);
 		parameterSets = ParameterSet.getPortion(fraction, denominator, fullSet);
-		System.out.println("Benchmark started. Testing " + parameterSets.length +" out of " + fullSet.length + " parameter combinations.");
+		System.out.println("Benchmark started. Testing " + parameterSets.length +" out of " + fullSet.length + " parameter combinations at fraction " + fraction + " of " + denominator);
 		Main.runInBenchmarkMode(1, parameterSets[0]);
 	}
 	
 	public static void continueAt(int benchmarkPosition, String results) {
-		System.out.println("Combination "+ benchmarkPosition + " tested.");
+		System.out.print(".");
 		Benchmark.results += "\n" + results;
 		if(benchmarkPosition<parameterSets.length) { // check if out of bounds
 			Main.runInBenchmarkMode(benchmarkPosition + 1, parameterSets[benchmarkPosition]);
@@ -51,17 +51,17 @@ public class Benchmark {
 		}
 
 		public static ParameterSet[] generateParameterSets(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS) {
-			int[] ps = {5,10,15};
-			int[] ns = {4};
-			double[] mp = {0.01, 0.05, 0.25};
-			int[] ts = {2,4,8};
+			int[] populationSizes = {10,25,50,100};
+			int[] neighborhoodSizes = {4};
+			double[] mutationProbablilities = {0.01, 0.05, 0.1, 0.25};
+			int[] tournamentSizes = {2,3,6,10};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
-			for(int i = 0; i < ps.length; i++) {
-				for(int j = 0; j < ns.length; j++) {
-					for(int k = 0; k < mp.length; k++) {
-						for(int l = 0; l < ts.length; l++) {
-							parameterSet.add(new ParameterSet(SEARCH_METHOD, NUMBER_OF_TRIANGLES, NUMBER_OF_RUNS, NUMBER_OF_GENERATIONS, ps[i], ns[j], mp[k], ts[l]));
+			for(int i = 0; i < populationSizes.length; i++) {
+				for(int j = 0; j < neighborhoodSizes.length; j++) {
+					for(int k = 0; k < mutationProbablilities.length; k++) {
+						for(int l = 0; l < tournamentSizes.length; l++) {
+							parameterSet.add(new ParameterSet(SEARCH_METHOD, NUMBER_OF_TRIANGLES, NUMBER_OF_RUNS, NUMBER_OF_GENERATIONS, populationSizes[i], neighborhoodSizes[j], mutationProbablilities[k], tournamentSizes[l]));
 						}
 					}
 				}
