@@ -8,7 +8,7 @@ import cifo.core.Solution;
 
 public class GeneticAlgorithm extends SearchMethod {
 
-	public enum XOOperator {vertexBased, colorBased, complete};
+	public enum XOOperator {vertexBased, colorBased, complete, multiPointComplete, multiPointRandomFeature};
 	protected ProblemInstance instance;
 	protected int populationSize, numberOfGenerations;
 	protected double mutationProbability;
@@ -96,10 +96,8 @@ public class GeneticAlgorithm extends SearchMethod {
 		Solution firstParent = population[parents[0]];
 		Solution secondParent = population[parents[1]];
 		Solution offspring = firstParent.copy();
-		int crossoverPoint = r.nextInt(instance.getNumberOfTriangles() * Solution.VALUES_PER_TRIANGLE);
-		// change crossoverPoint to indicate index of closest triangle (rounding down)
-		crossoverPoint = crossoverPoint / Solution.VALUES_PER_TRIANGLE;
-		
+		int crossoverPoint = r.nextInt(instance.getNumberOfTriangles());
+
 		// randomly choose XO Operator to be used
 		XOOperator xoOp = crossoverOperators[r.nextInt(crossoverOperators.length)];
 		switch(xoOp) {
@@ -108,6 +106,12 @@ public class GeneticAlgorithm extends SearchMethod {
 				break;
 			case colorBased:
 				colorBasedCrossover(offspring, secondParent, crossoverPoint);
+				break;
+			case multiPointComplete:
+				multiPointCompleteCrossover(offspring, secondParent);
+				break;
+			case multiPointRandomFeature:
+				multiPointRandomFeatureCrossover(offspring, secondParent);
 				break;
 			case complete:
 				completeCrossover(offspring, secondParent, crossoverPoint);
@@ -121,7 +125,28 @@ public class GeneticAlgorithm extends SearchMethod {
 		for (int i = crossoverPoint; i < instance.getNumberOfTriangles() * Solution.VALUES_PER_TRIANGLE; i++) {
 			offspring.setValue(i, secondParent.getValue(i));
 		}
-		
+	}
+	
+	private void multiPointCompleteCrossover(Solution offspring, Solution secondParent) {
+		int noOfCrossovers = 1+(instance.getNumberOfTriangles()/10);
+		for (int i = 0; i < noOfCrossovers; i++) {
+			int crossoverPoint = r.nextInt(instance.getNumberOfTriangles());
+			for (int valueIndex = crossoverPoint; valueIndex < crossoverPoint + Solution.VALUES_PER_TRIANGLE; valueIndex++) {
+				offspring.setValue(valueIndex, secondParent.getValue(valueIndex));
+			}
+		}
+	}
+	
+	private void multiPointRandomFeatureCrossover(Solution offspring, Solution secondParent) {
+		int noOfCrossovers = 1+(instance.getNumberOfTriangles()/10);
+		for (int i = 0; i < noOfCrossovers; i++) {
+			int crossoverPoint = r.nextInt(instance.getNumberOfTriangles());
+			for (int valueIndex = crossoverPoint; valueIndex < crossoverPoint + Solution.VALUES_PER_TRIANGLE; valueIndex++) {
+				if(r.nextBoolean()) {
+					offspring.setValue(valueIndex, secondParent.getValue(valueIndex));
+				}
+			}
+		}
 	}
 
 	private void colorBasedCrossover(Solution offspring, Solution secondParent, int crossoverPoint) {
