@@ -1,6 +1,7 @@
 package cifo.core;
 
 import cifo.utils.Statistics;
+import cifo.searchMethods.GeneticAlgorithm.XOOperator;
 import gd.gui.GeneticDrawingApp;
 
 public class Main {
@@ -31,6 +32,7 @@ public class Main {
 	public static double[] bestFitness = new double[NUMBER_OF_RUNS];
 	public static int currentRun = 0;
 
+	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.colorBased};
 	public static void main(String[] args) {
 		run();
 	}

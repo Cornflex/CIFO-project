@@ -8,6 +8,7 @@ import cifo.core.Solution;
 
 public class GeneticAlgorithm extends SearchMethod {
 
+	public enum XOOperator {vertexBased, colorBased, complete};
 	protected ProblemInstance instance;
 	protected int populationSize, numberOfGenerations;
 	protected double mutationProbability;
@@ -17,6 +18,7 @@ public class GeneticAlgorithm extends SearchMethod {
 	protected int currentGeneration;
 	protected Solution[] population;
 	protected Random r;
+	protected XOOperator[] crossoverOperators;
 
 	public GeneticAlgorithm() {
 		instance = new ProblemInstance(Main.NUMBER_OF_TRIANGLES);
@@ -24,6 +26,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		numberOfGenerations = Main.NUMBER_OF_GENERATIONS;
 		mutationProbability = Main.MUTATION_PROBABILIY;
 		tournamentSize = Main.TOURNAMENT_SIZE;
+		crossoverOperators = Main.CROSSOVER_OPERATORS;
 		printFlag = false;
 		currentGeneration = 0;
 		r = new Random();
@@ -94,10 +97,51 @@ public class GeneticAlgorithm extends SearchMethod {
 		Solution secondParent = population[parents[1]];
 		Solution offspring = firstParent.copy();
 		int crossoverPoint = r.nextInt(instance.getNumberOfTriangles() * Solution.VALUES_PER_TRIANGLE);
+		// change crossoverPoint to indicate index of closest triangle (rounding down)
+		crossoverPoint = crossoverPoint / Solution.VALUES_PER_TRIANGLE;
+		
+		// randomly choose XO Operator to be used
+		XOOperator xoOp = crossoverOperators[r.nextInt(crossoverOperators.length)];
+		switch(xoOp) {
+			case vertexBased:
+				vertexBasedCrossover(offspring, secondParent, crossoverPoint);
+				break;
+			case colorBased:
+				colorBasedCrossover(offspring, secondParent, crossoverPoint);
+				break;
+			case complete:
+				completeCrossover(offspring, secondParent, crossoverPoint);
+		}
+		return offspring;
+	}
+	
+
+	private void completeCrossover(Solution offspring, Solution secondParent, int crossoverPoint) {
+		crossoverPoint = crossoverPoint * Solution.VALUES_PER_TRIANGLE;
 		for (int i = crossoverPoint; i < instance.getNumberOfTriangles() * Solution.VALUES_PER_TRIANGLE; i++) {
 			offspring.setValue(i, secondParent.getValue(i));
 		}
-		return offspring;
+		
+	}
+
+	private void colorBasedCrossover(Solution offspring, Solution secondParent, int crossoverPoint) {
+		for(int i = crossoverPoint; i < instance.getNumberOfTriangles(); i++) {
+			offspring.setAlpha(i, secondParent.getAlpha(i));
+			offspring.setHue(i, secondParent.getHue(i));
+			offspring.setSaturation(i, secondParent.getSaturation(i));
+			offspring.setBrightness(i, secondParent.getBrightness(i));
+		}		
+	}
+
+	private void vertexBasedCrossover(Solution offspring, Solution secondParent, int crossoverPoint) {
+		for(int i = crossoverPoint; i < instance.getNumberOfTriangles(); i++) {
+			offspring.setXFromVertex1(i, secondParent.getXFromVertex1(i));
+			offspring.setYFromVertex1(i, secondParent.getYFromVertex1(i));
+			offspring.setXFromVertex2(i, secondParent.getXFromVertex2(i));
+			offspring.setYFromVertex2(i, secondParent.getYFromVertex2(i));
+			offspring.setXFromVertex3(i, secondParent.getXFromVertex3(i));
+			offspring.setYFromVertex3(i, secondParent.getYFromVertex3(i));
+		}
 	}
 
 	public Solution[] survivorSelection(Solution[] offspring) {
