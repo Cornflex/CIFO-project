@@ -89,6 +89,7 @@ public class Main {
 		double worst = Statistics.max(bestFitness);
 		System.out.printf("\n\t\tMean +- std dev\t\tBest\t\tWorst\n\n");
 		System.out.printf("Results\t\t%.2f +- %.2f\t%.2f\t%.2f\n", mean, stdDev, best, worst);
+		System.out.println(resultsAsCSV());
 	}
 	
 	public static String resultsAsCSV() {
