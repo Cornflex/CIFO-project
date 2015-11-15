@@ -1,9 +1,10 @@
 package cifo.core;
 
 import java.util.ArrayList;
+import cifo.searchMethods.GeneticAlgorithm.XOOperator;
 
 public class Benchmark {
-	private static String results = "\nSEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,mean,stdDev,best,worst";
+	private static String results = "\nSEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,XO,mean,stdDev,best,worst";
 	private static ParameterSet[] parameterSets;
 	
 	public static void main(String args[]) {
@@ -38,33 +39,35 @@ public class Benchmark {
 		public int NEIGHBORHOOD_SIZE;
 		public double MUTATION_PROBABILIY;
 		public int TOURNAMENT_SIZE;
+		public XOOperator[] CROSSOVER_OPERATORS;
 
-		public ParameterSet(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS, int POPULATION_SIZE, int NEIGHBORHOOD_SIZE, double MUTATION_PROBABILIY, int TOURNAMENT_SIZE) {
+		public ParameterSet(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS, int POPULATION_SIZE, double MUTATION_PROBABILIY, int TOURNAMENT_SIZE, XOOperator[] xoOperators) {
 			this.SEARCH_METHOD = SEARCH_METHOD;
 			this.NUMBER_OF_TRIANGLES = NUMBER_OF_TRIANGLES;
 			this.NUMBER_OF_RUNS = NUMBER_OF_RUNS;
 			this.NUMBER_OF_GENERATIONS = NUMBER_OF_GENERATIONS;
 			this.POPULATION_SIZE = POPULATION_SIZE;
-			this.NEIGHBORHOOD_SIZE = NEIGHBORHOOD_SIZE;
+			this.NEIGHBORHOOD_SIZE = 4;
 			this.MUTATION_PROBABILIY = MUTATION_PROBABILIY;
 			this.TOURNAMENT_SIZE = TOURNAMENT_SIZE;
+			this.CROSSOVER_OPERATORS = xoOperators;
 		}
 
 		public static ParameterSet[] generateParameterSets(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS) {
 			int[] populationSizes = {10,25,75};
-			int[] neighborhoodSizes = {4};
 			double[] mutationProbablilities = {0.01, 0.05, 0.25};
 			int[] tournamentSizes = {2,3,6};
 			int[] triangleNumbers = {75,100,125};
+			XOOperator[][] xoOperatorCombinations = {{XOOperator.complete},{XOOperator.alternating, XOOperator.frontMost}};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
 			for(int i = 0; i < populationSizes.length; i++) {
-				for(int j = 0; j < neighborhoodSizes.length; j++) {
-					for(int k = 0; k < mutationProbablilities.length; k++) {
-						for(int l = 0; l < tournamentSizes.length; l++) {
-							for(int m = 0; m < triangleNumbers.length; m++) {
-								parameterSet.add(new ParameterSet(SEARCH_METHOD, triangleNumbers[m], NUMBER_OF_RUNS, NUMBER_OF_GENERATIONS, populationSizes[i], neighborhoodSizes[j], mutationProbablilities[k], tournamentSizes[l]));
-							}
+					for(int j = 0; j < mutationProbablilities.length; j++) {
+						for(int k = 0; k < tournamentSizes.length; k++) {
+							for(int l = 0; l < xoOperatorCombinations.length; l++) {
+								for(int m = 0; m < triangleNumbers.length; m++) {
+									parameterSet.add(new ParameterSet(SEARCH_METHOD, triangleNumbers[m], NUMBER_OF_RUNS, NUMBER_OF_GENERATIONS, populationSizes[i], mutationProbablilities[j], tournamentSizes[k], xoOperatorCombinations[l]));
+								}
 						}
 					}
 				}

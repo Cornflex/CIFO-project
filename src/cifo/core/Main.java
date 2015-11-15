@@ -50,6 +50,7 @@ public class Main {
 		Main.NEIGHBORHOOD_SIZE = parameterSet.NEIGHBORHOOD_SIZE;
 		Main.MUTATION_PROBABILIY = parameterSet.MUTATION_PROBABILIY;
 		Main.TOURNAMENT_SIZE = parameterSet.TOURNAMENT_SIZE;
+		Main.CROSSOVER_OPERATORS = parameterSet.CROSSOVER_OPERATORS;
 		
 		// set other parameters
 		KEEP_WINDOWS_OPEN = false;
@@ -64,12 +65,14 @@ public class Main {
 	public static void addBestSolution(Solution bestSolution) {
 		bestSolutions[currentRun] = bestSolution;
 		bestFitness[currentRun] = bestSolution.getFitness();
-		System.out.printf("Got %.2f as a result for run %d\n", bestFitness[currentRun], currentRun + 1);
-		System.out.print("All runs:");
-		for (int i = 0; i <= currentRun; i++) {
-			System.out.printf("\t%.2f", bestFitness[i]);
+		if(printFlag) {
+			System.out.printf("Got %.2f as a result for run %d\n", bestFitness[currentRun], currentRun + 1);
+			System.out.print("All runs:");
+			for (int i = 0; i <= currentRun; i++) {
+				System.out.printf("\t%.2f", bestFitness[i]);
+			}
+			System.out.println();
 		}
-		System.out.println();
 		currentRun++;
 		if (KEEP_WINDOWS_OPEN == false) {
 			ProblemInstance.view.getFittestDrawingView().dispose();
@@ -100,6 +103,11 @@ public class Main {
 		double stdDev = Statistics.standardDeviation(bestFitness);
 		double best = Statistics.min(bestFitness);
 		double worst = Statistics.max(bestFitness);
+		String xoOps = "";
+		for(XOOperator xoOp : Main.CROSSOVER_OPERATORS) {
+			xoOps += xoOp.name() + "/";
+		}
+		xoOps = xoOps.substring(0, xoOps.length() - 1);
 		return(
 				SEARCH_METHOD + ","
 				+ NUMBER_OF_TRIANGLES + ","
@@ -109,6 +117,7 @@ public class Main {
 				+ NEIGHBORHOOD_SIZE + ","
 				+ MUTATION_PROBABILIY + ","
 				+ TOURNAMENT_SIZE + ","
+				+ xoOps + ","
 				+ mean + ","
 				+ stdDev + ","
 				+ best + ","
