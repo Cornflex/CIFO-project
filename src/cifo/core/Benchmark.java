@@ -8,9 +8,9 @@ public class Benchmark {
 	private static ParameterSet[] parameterSets;
 	
 	public static void main(String args[]) {
-		int fraction = 8;
-		int denominator = 9;
-		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 2, 500);
+		int fraction = 1;
+		int denominator = 1;
+		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 3, 500);
 		parameterSets = ParameterSet.getPortion(fraction, denominator, fullSet);
 		System.out.println("Benchmark started. Testing " + parameterSets.length +" out of " + fullSet.length + " parameter combinations at fraction " + fraction + " of " + denominator);
 		Main.runInBenchmarkMode(1, parameterSets[0]);
@@ -54,11 +54,11 @@ public class Benchmark {
 		}
 
 		public static ParameterSet[] generateParameterSets(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS) {
-			int[] populationSizes = {10,25,75};
-			double[] mutationProbablilities = {0.01, 0.05, 0.25};
-			int[] tournamentSizes = {2,3,6};
-			int[] triangleNumbers = {75,100,125};
-			XOOperator[][] xoOperatorCombinations = {{XOOperator.complete},{XOOperator.alternating, XOOperator.frontMost}};
+			int[] populationSizes = {50};
+			double[] mutationProbablilities = {0.1};
+			int[] tournamentSizes = {4};
+			int[] triangleNumbers = {100};
+			XOOperator[][] xoOperatorCombinations = {{XOOperator.vertexBased}, {XOOperator.colorBased}, {XOOperator.multiPointComplete}, {XOOperator.multiPointRandomFeature},{XOOperator.alternating}, {XOOperator.frontMost}};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
 			for(int i = 0; i < populationSizes.length; i++) {

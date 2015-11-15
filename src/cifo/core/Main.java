@@ -16,9 +16,9 @@ public class Main {
 
 	public static int NUMBER_OF_TRIANGLES = 100;
 
-	public static int NUMBER_OF_RUNS = 1;
+	public static int NUMBER_OF_RUNS = 3;
 	public static int NUMBER_OF_GENERATIONS = 500;
-	public static int POPULATION_SIZE = 25;
+	public static int POPULATION_SIZE = 50;
 	public static int NEIGHBORHOOD_SIZE = 10;
 	public static double MUTATION_PROBABILIY = 0.001;
 	public static int TOURNAMENT_SIZE = 3;

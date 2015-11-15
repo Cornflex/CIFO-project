@@ -12,7 +12,7 @@ public class GeneticAlgorithm extends SearchMethod {
 
 	public enum XOOperator {vertexBased, colorBased, complete, multiPointComplete, multiPointRandomFeature, frontMost, alternating};
 	protected ProblemInstance instance;
-	protected int populationSize, numberOfGenerations;
+	protected int populationSize, numberOfGenerations, minPopulationSize, maxPopulationSize;
 	protected double mutationProbability;
 	protected int tournamentSize;
 	protected boolean printFlag;
@@ -21,13 +21,20 @@ public class GeneticAlgorithm extends SearchMethod {
 	protected int currentGeneration;
 	protected Solution[] population;
 	protected Random r;
-	protected boolean useElitism;
+	protected boolean useElitism, useDynamicPopulationSize;
 	protected int eliteNum;
 	protected XOOperator[] crossoverOperators;
+
+	// Fields for dynamic population sizes
+	protected double lastDelta;
+	protected double pivotSum;
+	protected int period;
 
 	public GeneticAlgorithm() {
 		instance = new ProblemInstance(Main.NUMBER_OF_TRIANGLES);
 		populationSize = Main.POPULATION_SIZE;
+		minPopulationSize = 10;
+		maxPopulationSize = 90;
 		numberOfGenerations = Main.NUMBER_OF_GENERATIONS;
 		mutationProbability = Main.MUTATION_PROBABILIY;
 		tournamentSize = Main.TOURNAMENT_SIZE;
@@ -37,6 +44,9 @@ public class GeneticAlgorithm extends SearchMethod {
 		useElitism = Main.USE_ELITISM;
 		if (useElitism){eliteNum = (int) Math.round(populationSize*Main.ELITE_PROPORTION);}
 		else {eliteNum = 0;};
+		
+		useDynamicPopulationSize = false;
+		period = 20;
 		
 		r = new Random();
 	}
@@ -80,7 +90,12 @@ public class GeneticAlgorithm extends SearchMethod {
 			else{
 				population=offspring;
 			}
+			Solution lastBest = this.currentBest;
 			updateCurrentBest();
+			if(useDynamicPopulationSize && this.currentGeneration > 2) {
+				adaptPopulationSize(lastBest, currentBest);
+				System.out.println(populationSize);
+			}
 			updateInfo();
 			currentGeneration++;
 		}
@@ -104,6 +119,135 @@ public class GeneticAlgorithm extends SearchMethod {
 			}
 		}
 		return parents;
+	}
+	
+	private void adaptPopulationSize(Solution lastBest, Solution currentBest) {
+		double currentDelta = lastBest.getFitness() - currentBest.getFitness();
+		double pivot = lastDelta - currentDelta; // SUP method
+		if(currentGeneration % period == 0) {
+			pivot += pivotSum;
+			pivotSum = 0;
+			pivot = pivot / period;
+		}
+		else {
+			pivotSum += pivot;
+		}
+		
+		if(currentDelta > pivot) {
+			double relativeDelta = (currentDelta / initialFitness) * 100;
+			int suppressCount =  (int) Math.ceil(Math.ceil(0.1 * populationSize) * relativeDelta);
+			suppressPopulation( suppressCount );
+		}
+		else {
+			double relativeDelta = 100 - (currentDelta / initialFitness) * 100;
+			int increaseCount =  (int) Math.ceil(Math.ceil(0.05 * populationSize) * relativeDelta);
+			increasePopulation( increaseCount );
+		}
+		lastDelta = currentDelta;
+	}
+
+	private void increasePopulation(int noOfChangedIndividuals) {
+		if(noOfChangedIndividuals < 1) {
+			noOfChangedIndividuals = 1;
+		}
+		if(populationSize + noOfChangedIndividuals <= maxPopulationSize) {
+			populationSize += noOfChangedIndividuals;
+		}
+		else if(populationSize != maxPopulationSize){
+			populationSize = maxPopulationSize;
+		}
+		else {
+			return;
+		}
+		Solution[] newPopulation = new Solution[populationSize];
+		for(int i = 0; i < newPopulation.length; i++) {
+			if(i < newPopulation.length - noOfChangedIndividuals - 1) {
+				newPopulation[i] = population[i];
+			}
+			else {
+				Solution newIndividuals[] = getBest(population, noOfChangedIndividuals);
+				int randomIndiv = r.nextInt(newIndividuals.length);
+				newPopulation[i] = newIndividuals[randomIndiv].applyMutation();
+			}
+		}
+		population = newPopulation;
+	}
+
+	private void suppressPopulation(int noOfChangedIndividuals) {
+		if(noOfChangedIndividuals < 1) {
+			noOfChangedIndividuals = 1;
+		}
+		if(populationSize - noOfChangedIndividuals >= minPopulationSize) {
+			populationSize -= noOfChangedIndividuals;
+		}
+		else if(populationSize != minPopulationSize){
+			populationSize = minPopulationSize;
+		}
+		else {
+			return;
+		}
+		Solution[] worstIndividuals = getWorstNo(population, noOfChangedIndividuals); 
+		Solution[] newPopulation = new Solution[populationSize];
+		int lastFilledIndex = 0;
+		for(int i = 0; i < population.length && lastFilledIndex < populationSize; i++) {
+			boolean isWorst = false;
+			for(int j = 0; j < worstIndividuals.length; j++) {	
+				if(population[j] == population[i]) {
+					isWorst = true;
+				}
+			}
+			if(!isWorst) {
+				newPopulation[lastFilledIndex] = population[i];
+				lastFilledIndex++;
+			}
+		}
+		population = newPopulation;
+		
+	}
+	public Solution[] getWorstNo(Solution[] population, int noOfIndividuals) {
+		Solution[] worst = new Solution[noOfIndividuals];
+		for(int i = 0; i < worst.length; i++) {
+			for(int j = 0; j < population.length; j ++) {
+				boolean alreadyListed = false;
+				for(int k = 0; k < i; k++) {
+					if(worst[k] == population[j]) {
+						alreadyListed = true;
+						break;
+					}
+				}
+				if(alreadyListed) {
+					continue;
+				}
+				else if(worst[i] == null || worst[i].getFitness() > population[j].getFitness()) {
+					worst[i] = population[j];
+				}
+			}
+		}
+		return worst;
+	}
+	public Solution[] getBest(Solution[] population, int noOfIndividuals) {
+		Solution[] best = new Solution[noOfIndividuals];
+		if(noOfIndividuals > population.length) {
+			return population;
+		}
+		for(int i = 0; i < best.length; i++) {
+			for(int j = 0; j < population.length; j ++) {
+				boolean alreadyListed = false;
+				for(int k = 0; k < i; k++) {
+					if(best[k] == population[j]) {
+						alreadyListed = true;
+						break;
+					}
+				}
+				if(alreadyListed) {
+					continue;
+				}
+				else if(best[i] == null || best[i].getFitness() < population[j].getFitness()) {
+					best[i] = population[j];
+				}
+			}
+		}
+		return best;
 	}
 
 	public Solution applyCrossover(int[] parents) {
