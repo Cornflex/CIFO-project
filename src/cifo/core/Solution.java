@@ -74,8 +74,7 @@ public class Solution {
 			if (valueIndex % 2 == 0) {
 				temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(instance.getImageWidth() + 1);
 			} else {
-				temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r
-						.nextInt(instance.getImageHeight() + 1);
+				temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(instance.getImageHeight() + 1);
 			}
 		}
 		return temp;
@@ -95,10 +94,12 @@ public class Solution {
 					if (valueIndex % 2 == 0) {
 						temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(instance.getImageWidth() + 1);
 					} else {
-						temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r
-								.nextInt(instance.getImageHeight() + 1);
+						temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(instance.getImageHeight() + 1);
 					}
 				}
+				
+				applyMutationFlipOrder(triangleIndex);		
+				
 			}
 		}
 			
@@ -120,7 +121,6 @@ public class Solution {
 		return temp;
 	}
 	
-
 	
 	public Solution applyMutationFlipLocation(int triangleIndexOne){
 		Solution temp = this.copy();

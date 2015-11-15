@@ -374,17 +374,6 @@ public class GeneticAlgorithm extends SearchMethod {
 		return elites;
 	}
 	
-	//prints out the fitness of the best solutions in current population (the expected elites) just used for checking my code
-	public void eliteCheck(){
-		double[] fitness = new double[population.length];
-		for(int i=0; i<population.length;i++){
-			fitness[i]=population[i].getFitness();
-		}
-		Arrays.sort(fitness);
-		for(int i=0; i<eliteNum;i++){
-		System.out.println("most fit " + fitness[i]);
-		}
-	}
 	
 	//for elitism, gets the indexes of the worst solutions in the population
 	public int[] GetWorst(Solution[] offspring){
@@ -409,18 +398,6 @@ public class GeneticAlgorithm extends SearchMethod {
 		}
 
 		return excluded;
-	}
-	
-	//prints out the fitness of the best solutions in current population (the expected elites) just used for checking my cod
-	public void worstCheck(Solution[] offspring){
-		double[] fitness = new double[population.length];
-		for(int i=0; i<offspring.length;i++){
-			fitness[i]=offspring[i].getFitness();
-		}
-		Arrays.sort(fitness);
-		for(int i=fitness.length-1; i>fitness.length-1-eliteNum;i--){
-		System.out.println("least fit " + fitness[i] + " at index " + i);
-		}
 	}
 	
 
