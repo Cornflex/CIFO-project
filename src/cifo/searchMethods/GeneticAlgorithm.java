@@ -21,12 +21,9 @@ public class GeneticAlgorithm extends SearchMethod {
 	protected int currentGeneration;
 	protected Solution[] population;
 	protected Random r;
-<<<<<<< HEAD
 	protected boolean useElitism;
 	protected int eliteNum;
-=======
 	protected XOOperator[] crossoverOperators;
->>>>>>> origin/master
 
 	public GeneticAlgorithm() {
 		instance = new ProblemInstance(Main.NUMBER_OF_TRIANGLES);
