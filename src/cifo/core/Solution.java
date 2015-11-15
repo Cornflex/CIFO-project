@@ -122,6 +122,22 @@ public class Solution {
 		return temp;
 	}
 	
+	public Solution applyMutationFlipOrder(){
+		Solution temp = this.copy();
+		
+				
+		int triangleIndexOne = r.nextInt(instance.getNumberOfTriangles());
+		int triangleIndexTwo = r.nextInt(instance.getNumberOfTriangles());	
+		
+		for (int i = 0; i <= 10; i ++) {
+
+			temp.values[triangleIndexOne * VALUES_PER_TRIANGLE + i] = values[triangleIndexTwo * VALUES_PER_TRIANGLE + i];	
+			temp.values[triangleIndexTwo * VALUES_PER_TRIANGLE + i] = values[triangleIndexOne * VALUES_PER_TRIANGLE + i];
+		}
+		
+		return temp;
+	}
+	
 	public void draw() {
 		BufferedImage generatedImage = createImage();
 		Graphics g = ProblemInstance.view.getFittestDrawingView().getMainPanel().getGraphics();
