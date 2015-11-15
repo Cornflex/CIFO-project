@@ -16,11 +16,13 @@ public class Main {
 	public static int NUMBER_OF_TRIANGLES = 100;
 
 	public static int NUMBER_OF_RUNS = 1;
-	public static int NUMBER_OF_GENERATIONS = 5;
+	public static int NUMBER_OF_GENERATIONS = 500;
 	public static int POPULATION_SIZE = 25;
 	public static int NEIGHBORHOOD_SIZE = 10;
 	public static double MUTATION_PROBABILIY = 0.25;
 	public static int TOURNAMENT_SIZE = 3;
+	public static boolean USE_ELITISM = true;
+	public static double ELITE_PROPORTION = 0.05;
 	
 	public static int benchmarkPosition = 0;
 
@@ -30,6 +32,7 @@ public class Main {
 	public static Solution[] bestSolutions = new Solution[NUMBER_OF_RUNS];
 	public static double[] bestFitness = new double[NUMBER_OF_RUNS];
 	public static int currentRun = 0;
+
 
 	public static void main(String[] args) {
 		run();
@@ -60,14 +63,12 @@ public class Main {
 	public static void addBestSolution(Solution bestSolution) {
 		bestSolutions[currentRun] = bestSolution;
 		bestFitness[currentRun] = bestSolution.getFitness();
-		if(printFlag) {
-			System.out.printf("Got %.2f as a result for run %d\n", bestFitness[currentRun], currentRun + 1);
-			System.out.print("All runs:");
-			for (int i = 0; i <= currentRun; i++) {
-				System.out.printf("\t%.2f", bestFitness[i]);
-			}
-			System.out.println();
+		System.out.printf("Got %.2f as a result for run %d\n", bestFitness[currentRun], currentRun + 1);
+		System.out.print("All runs:");
+		for (int i = 0; i <= currentRun; i++) {
+			System.out.printf("\t%.2f", bestFitness[i]);
 		}
+		System.out.println();
 		currentRun++;
 		if (KEEP_WINDOWS_OPEN == false) {
 			ProblemInstance.view.getFittestDrawingView().dispose();
@@ -75,13 +76,12 @@ public class Main {
 		}
 		if (currentRun < NUMBER_OF_RUNS) {
 			run();
-		} else if(benchmarkPosition > 0) {
-			Benchmark.continueAt(benchmarkPosition, resultsAsCSV());
 		} else {
 			presentResults();
 		}
 	}
 
+	
 	public static void presentResults() {
 		double mean = Statistics.mean(bestFitness);
 		double stdDev = Statistics.standardDeviation(bestFitness);
