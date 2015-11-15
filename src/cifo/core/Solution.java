@@ -80,7 +80,31 @@ public class Solution {
 		return temp;
 	}
 
+	public Solution applyMutationPerValue(double mutationProbability) {
+		Solution temp = this.copy();
+		for (int i = 0; i <temp.values.length; i++) {
+			if (r.nextDouble() <= mutationProbability) {
+				
+				int triangleIndex = i/VALUES_PER_TRIANGLE;
+				int valueIndex = i-(triangleIndex*VALUES_PER_TRIANGLE);
+				if (valueIndex < 4) {
+					temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(256);
+				} else {
+					if (valueIndex % 2 == 0) {
+						temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(instance.getImageWidth() + 1);
+					} else {
+						temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r
+								.nextInt(instance.getImageHeight() + 1);
+					}
+				}
+				
+			}
+		}
+
+		return temp;
+	}
 	
+
 	public Solution applyMutationFlipLocation(){
 		Solution temp = this.copy();
 		int triangleIndexOne = r.nextInt(instance.getNumberOfTriangles());
