@@ -80,6 +80,24 @@ public class Solution {
 		return temp;
 	}
 
+	
+	public Solution applyMutationFlipLocation(){
+		Solution temp = this.copy();
+		int triangleIndexOne = r.nextInt(instance.getNumberOfTriangles());
+		int triangleIndexTwo = r.nextInt(instance.getNumberOfTriangles());
+		
+		for (int i = 4; i <= 8; i += 2) {
+
+			temp.values[triangleIndexOne * VALUES_PER_TRIANGLE + i] = values[triangleIndexTwo * VALUES_PER_TRIANGLE + i];
+			temp.values[triangleIndexOne * VALUES_PER_TRIANGLE + i + 1] = values[triangleIndexTwo * VALUES_PER_TRIANGLE + i + 1];
+			
+			temp.values[triangleIndexTwo * VALUES_PER_TRIANGLE + i] = values[triangleIndexOne * VALUES_PER_TRIANGLE + i];
+			temp.values[triangleIndexTwo * VALUES_PER_TRIANGLE + i + 1] = values[triangleIndexOne * VALUES_PER_TRIANGLE + i +1];
+		}
+		
+		return temp;
+	}
+	
 	public void draw() {
 		BufferedImage generatedImage = createImage();
 		Graphics g = ProblemInstance.view.getFittestDrawingView().getMainPanel().getGraphics();
