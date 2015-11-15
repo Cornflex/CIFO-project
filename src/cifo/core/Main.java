@@ -20,7 +20,7 @@ public class Main {
 	public static int NUMBER_OF_GENERATIONS = 500;
 	public static int POPULATION_SIZE = 25;
 	public static int NEIGHBORHOOD_SIZE = 10;
-	public static double MUTATION_PROBABILIY = 0.99;
+	public static double MUTATION_PROBABILIY = 0.001;
 	public static int TOURNAMENT_SIZE = 3;
 	public static boolean USE_ELITISM = true;
 	public static double ELITE_PROPORTION = 0.05;

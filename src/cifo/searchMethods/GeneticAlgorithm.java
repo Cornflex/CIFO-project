@@ -69,10 +69,10 @@ public class GeneticAlgorithm extends SearchMethod {
 			for (int k = 0; k < population.length; k++) {
 				int[] parents = selectParents();
 				offspring[k] = applyCrossover(parents);
-				if (r.nextDouble() <= mutationProbability) {
-					offspring[k] = offspring[k].applyMutation();
-				}
-				offspring[k].evaluate();
+
+				offspring[k] = offspring[k].applyMutationPerValue(mutationProbability);
+ 				offspring[k].evaluate();
+				
 			}
 			if (useElitism){
 				population = survivorSelection(offspring);
