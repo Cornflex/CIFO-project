@@ -85,9 +85,17 @@ public class Solution {
 		Solution temp = this.copy();
 		for (int i = 0; i <temp.values.length; i++) {
 			if (r.nextDouble() <= mutationProbability) {
-				
-				temp=applyMutationOneValueChange(i);
-										
+				//if probability condition met, randomly apply one mutation method
+				int mutationChoice = r.nextInt(2);
+				if (mutationChoice == 0){
+					temp=applyMutationOneValueChange(i);
+				}
+				else if (mutationChoice == 1){
+					temp=applyMutationFlipLocation(i/VALUES_PER_TRIANGLE);					
+				}
+				else if (mutationChoice == 2){
+					temp=applyMutationFlipOrder(i/VALUES_PER_TRIANGLE);					
+				}										
 			}
 		}			
 		return temp;	
@@ -111,18 +119,7 @@ public class Solution {
 		return temp;
 	}
 
-	public Solution applyMutationPerTriangle(double mutationProbability) {
-		Solution temp = this.copy();
-		for (int i = 0; i <instance.getNumberOfTriangles(); i++) {
-			if (r.nextDouble() <= mutationProbability) {				
-				temp=applyMutationFlipOrder(i);	
-				
-			}			
-		}
 
-		return temp;
-	}
-	
 	
 	public Solution applyMutationFlipLocation(int triangleIndexOne){
 		Solution temp = this.copy();

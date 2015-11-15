@@ -80,7 +80,7 @@ public class GeneticAlgorithm extends SearchMethod {
 				int[] parents = selectParents();
 				offspring[k] = applyCrossover(parents);
 
-				offspring[k] = offspring[k].applyMutationPerValue(mutationProbability);
+				offspring[k] = offspring[k].applyMutationTest(mutationProbability);
  				offspring[k].evaluate();
 				
 			}
