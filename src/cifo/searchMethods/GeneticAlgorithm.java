@@ -10,6 +10,7 @@ import cifo.core.Solution;
 
 public class GeneticAlgorithm extends SearchMethod {
 
+	public enum XOOperator {vertexBased, colorBased, complete, multiPointComplete, multiPointRandomFeature};
 	protected ProblemInstance instance;
 	protected int populationSize, numberOfGenerations;
 	protected double mutationProbability;
@@ -20,8 +21,12 @@ public class GeneticAlgorithm extends SearchMethod {
 	protected int currentGeneration;
 	protected Solution[] population;
 	protected Random r;
+<<<<<<< HEAD
 	protected boolean useElitism;
 	protected int eliteNum;
+=======
+	protected XOOperator[] crossoverOperators;
+>>>>>>> origin/master
 
 	public GeneticAlgorithm() {
 		instance = new ProblemInstance(Main.NUMBER_OF_TRIANGLES);
@@ -29,6 +34,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		numberOfGenerations = Main.NUMBER_OF_GENERATIONS;
 		mutationProbability = Main.MUTATION_PROBABILIY;
 		tournamentSize = Main.TOURNAMENT_SIZE;
+		crossoverOperators = Main.CROSSOVER_OPERATORS;
 		printFlag = false;
 		currentGeneration = 0;
 		useElitism = Main.USE_ELITISM;
@@ -107,11 +113,77 @@ public class GeneticAlgorithm extends SearchMethod {
 		Solution firstParent = population[parents[0]];
 		Solution secondParent = population[parents[1]];
 		Solution offspring = firstParent.copy();
-		int crossoverPoint = r.nextInt(instance.getNumberOfTriangles() * Solution.VALUES_PER_TRIANGLE);
+		int crossoverPoint = r.nextInt(instance.getNumberOfTriangles());
+
+		// randomly choose XO Operator to be used
+		XOOperator xoOp = crossoverOperators[r.nextInt(crossoverOperators.length)];
+		switch(xoOp) {
+			case vertexBased:
+				vertexBasedCrossover(offspring, secondParent, crossoverPoint);
+				break;
+			case colorBased:
+				colorBasedCrossover(offspring, secondParent, crossoverPoint);
+				break;
+			case multiPointComplete:
+				multiPointCompleteCrossover(offspring, secondParent);
+				break;
+			case multiPointRandomFeature:
+				multiPointRandomFeatureCrossover(offspring, secondParent);
+				break;
+			case complete:
+				completeCrossover(offspring, secondParent, crossoverPoint);
+		}
+		return offspring;
+	}
+	
+
+	private void completeCrossover(Solution offspring, Solution secondParent, int crossoverPoint) {
+		crossoverPoint = crossoverPoint * Solution.VALUES_PER_TRIANGLE;
 		for (int i = crossoverPoint; i < instance.getNumberOfTriangles() * Solution.VALUES_PER_TRIANGLE; i++) {
 			offspring.setValue(i, secondParent.getValue(i));
 		}
-		return offspring;
+	}
+	
+	private void multiPointCompleteCrossover(Solution offspring, Solution secondParent) {
+		int noOfCrossovers = 1+(instance.getNumberOfTriangles()/10);
+		for (int i = 0; i < noOfCrossovers; i++) {
+			int crossoverPoint = r.nextInt(instance.getNumberOfTriangles());
+			for (int valueIndex = crossoverPoint; valueIndex < crossoverPoint + Solution.VALUES_PER_TRIANGLE; valueIndex++) {
+				offspring.setValue(valueIndex, secondParent.getValue(valueIndex));
+			}
+		}
+	}
+	
+	private void multiPointRandomFeatureCrossover(Solution offspring, Solution secondParent) {
+		int noOfCrossovers = 1+(instance.getNumberOfTriangles()/10);
+		for (int i = 0; i < noOfCrossovers; i++) {
+			int crossoverPoint = r.nextInt(instance.getNumberOfTriangles());
+			for (int valueIndex = crossoverPoint; valueIndex < crossoverPoint + Solution.VALUES_PER_TRIANGLE; valueIndex++) {
+				if(r.nextBoolean()) {
+					offspring.setValue(valueIndex, secondParent.getValue(valueIndex));
+				}
+			}
+		}
+	}
+
+	private void colorBasedCrossover(Solution offspring, Solution secondParent, int crossoverPoint) {
+		for(int i = crossoverPoint; i < instance.getNumberOfTriangles(); i++) {
+			offspring.setAlpha(i, secondParent.getAlpha(i));
+			offspring.setHue(i, secondParent.getHue(i));
+			offspring.setSaturation(i, secondParent.getSaturation(i));
+			offspring.setBrightness(i, secondParent.getBrightness(i));
+		}		
+	}
+
+	private void vertexBasedCrossover(Solution offspring, Solution secondParent, int crossoverPoint) {
+		for(int i = crossoverPoint; i < instance.getNumberOfTriangles(); i++) {
+			offspring.setXFromVertex1(i, secondParent.getXFromVertex1(i));
+			offspring.setYFromVertex1(i, secondParent.getYFromVertex1(i));
+			offspring.setXFromVertex2(i, secondParent.getXFromVertex2(i));
+			offspring.setYFromVertex2(i, secondParent.getYFromVertex2(i));
+			offspring.setXFromVertex3(i, secondParent.getXFromVertex3(i));
+			offspring.setYFromVertex3(i, secondParent.getYFromVertex3(i));
+		}
 	}
 	
 	//for elitism, gets array of elites in the population

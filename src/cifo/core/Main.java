@@ -1,6 +1,7 @@
 package cifo.core;
 
 import cifo.utils.Statistics;
+import cifo.searchMethods.GeneticAlgorithm.XOOperator;
 import gd.gui.GeneticDrawingApp;
 
 public class Main {
@@ -33,7 +34,11 @@ public class Main {
 	public static double[] bestFitness = new double[NUMBER_OF_RUNS];
 	public static int currentRun = 0;
 
+<<<<<<< HEAD
 
+=======
+	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.colorBased};
+>>>>>>> origin/master
 	public static void main(String[] args) {
 		run();
 	}
@@ -89,6 +94,7 @@ public class Main {
 		double worst = Statistics.max(bestFitness);
 		System.out.printf("\n\t\tMean +- std dev\t\tBest\t\tWorst\n\n");
 		System.out.printf("Results\t\t%.2f +- %.2f\t%.2f\t%.2f\n", mean, stdDev, best, worst);
+		System.out.println(resultsAsCSV());
 	}
 	
 	public static String resultsAsCSV() {
