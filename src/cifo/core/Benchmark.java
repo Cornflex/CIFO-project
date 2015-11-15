@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import cifo.searchMethods.GeneticAlgorithm.XOOperator;
 
 public class Benchmark {
-	private static String results = "\nSEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,XO,mean,stdDev,best,worst";
+	private static String results = "\nSEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,mean,stdDev,best,worst,XO";
 	private static ParameterSet[] parameterSets;
 	
 	public static void main(String args[]) {

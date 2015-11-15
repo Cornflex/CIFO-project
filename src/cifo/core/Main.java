@@ -117,11 +117,11 @@ public class Main {
 				+ NEIGHBORHOOD_SIZE + ","
 				+ MUTATION_PROBABILIY + ","
 				+ TOURNAMENT_SIZE + ","
-				+ xoOps + ","
 				+ mean + ","
 				+ stdDev + ","
 				+ best + ","
-				+ worst
+				+ worst + ","
+				+ xoOps
 		);
 		//System.out.printf("Results\t\t%.2f +- %.2f\t%.2f\t%.2f\n", mean, stdDev, best, worst);
 	}
