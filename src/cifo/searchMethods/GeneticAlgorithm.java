@@ -10,7 +10,7 @@ import cifo.core.Solution;
 
 public class GeneticAlgorithm extends SearchMethod {
 
-	public enum XOOperator {vertexBased, colorBased, complete, multiPointComplete, multiPointRandomFeature};
+	public enum XOOperator {vertexBased, colorBased, complete, multiPointComplete, multiPointRandomFeature, frontMost};
 	protected ProblemInstance instance;
 	protected int populationSize, numberOfGenerations;
 	protected double mutationProbability;
@@ -129,6 +129,10 @@ public class GeneticAlgorithm extends SearchMethod {
 				break;
 			case complete:
 				completeCrossover(offspring, secondParent, crossoverPoint);
+				break;
+			case frontMost:
+				frontMostCrossover(offspring, firstParent, secondParent, crossoverPoint);
+				break;
 		}
 		return offspring;
 	}
@@ -138,6 +142,14 @@ public class GeneticAlgorithm extends SearchMethod {
 		crossoverPoint = crossoverPoint * Solution.VALUES_PER_TRIANGLE;
 		for (int i = crossoverPoint; i < instance.getNumberOfTriangles() * Solution.VALUES_PER_TRIANGLE; i++) {
 			offspring.setValue(i, secondParent.getValue(i));
+		}
+	}
+	
+	private void frontMostCrossover(Solution offspring, Solution firstParent, Solution secondParent, int crossoverPoint) {
+		crossoverPoint = crossoverPoint * Solution.VALUES_PER_TRIANGLE;
+		int inverseCrossoverPoint = instance.getNumberOfTriangles() * Solution.VALUES_PER_TRIANGLE - crossoverPoint;
+		for (int i = 0; i < crossoverPoint; i++) {
+			offspring.setValue(i, secondParent.getValue(inverseCrossoverPoint + i));
 		}
 	}
 	

@@ -34,7 +34,7 @@ public class Main {
 	public static double[] bestFitness = new double[NUMBER_OF_RUNS];
 	public static int currentRun = 0;
 
-	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.colorBased};
+	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.frontMost};
 	public static void main(String[] args) {
 		run();
 	}
