@@ -10,7 +10,7 @@ import cifo.core.Solution;
 
 public class GeneticAlgorithm extends SearchMethod {
 
-	public enum XOOperator {vertexBased, colorBased, complete, multiPointComplete, multiPointRandomFeature, frontMost};
+	public enum XOOperator {vertexBased, colorBased, complete, multiPointComplete, multiPointRandomFeature, frontMost, alternating};
 	protected ProblemInstance instance;
 	protected int populationSize, numberOfGenerations;
 	protected double mutationProbability;
@@ -131,7 +131,10 @@ public class GeneticAlgorithm extends SearchMethod {
 				completeCrossover(offspring, secondParent, crossoverPoint);
 				break;
 			case frontMost:
-				frontMostCrossover(offspring, firstParent, secondParent, crossoverPoint);
+				frontMostCrossover(offspring, secondParent, crossoverPoint);
+				break;
+			case alternating:
+				alternatingCrossover(offspring, secondParent);
 				break;
 		}
 		return offspring;
@@ -145,11 +148,19 @@ public class GeneticAlgorithm extends SearchMethod {
 		}
 	}
 	
-	private void frontMostCrossover(Solution offspring, Solution firstParent, Solution secondParent, int crossoverPoint) {
+	private void frontMostCrossover(Solution offspring, Solution secondParent, int crossoverPoint) {
 		crossoverPoint = crossoverPoint * Solution.VALUES_PER_TRIANGLE;
 		int inverseCrossoverPoint = instance.getNumberOfTriangles() * Solution.VALUES_PER_TRIANGLE - crossoverPoint;
 		for (int i = 0; i < crossoverPoint; i++) {
 			offspring.setValue(i, secondParent.getValue(inverseCrossoverPoint + i));
+		}
+	}
+	
+	private void alternatingCrossover(Solution offspring, Solution secondParent) {
+		for (int i = 0; i < instance.getNumberOfTriangles(); i+=2) {
+			for(int j = 0; j < Solution.VALUES_PER_TRIANGLE; j++) {
+				offspring.setValue(i+j, secondParent.getValue(i+j));
+			}
 		}
 	}
 	
