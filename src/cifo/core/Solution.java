@@ -63,6 +63,7 @@ public class Solution {
 		fitness = Math.sqrt((double) sum);
 	}
 
+	//method from original code, not in use
 	public Solution applyMutation() {
 		Solution temp = this.copy();
 		int triangleIndex = r.nextInt(instance.getNumberOfTriangles());
@@ -79,6 +80,7 @@ public class Solution {
 		}
 		return temp;
 	}
+	
 
 	public Solution applyMutationPerValue(double mutationProbability) {
 		Solution temp = this.copy();
@@ -97,17 +99,31 @@ public class Solution {
 								.nextInt(instance.getImageHeight() + 1);
 					}
 				}
-				
 			}
+		}
+			
+		return temp;	
+		}
+			
+	
+	
+
+	public Solution applyMutationPerTriangle(double mutationProbability) {
+		Solution temp = this.copy();
+		for (int i = 0; i <instance.getNumberOfTriangles(); i++) {
+			if (r.nextDouble() <= mutationProbability) {				
+				temp=applyMutationFlipOrder(i);	
+				
+			}			
 		}
 
 		return temp;
 	}
 	
 
-	public Solution applyMutationFlipLocation(){
+	
+	public Solution applyMutationFlipLocation(int triangleIndexOne){
 		Solution temp = this.copy();
-		int triangleIndexOne = r.nextInt(instance.getNumberOfTriangles());
 		int triangleIndexTwo = r.nextInt(instance.getNumberOfTriangles());
 		
 		for (int i = 4; i <= 8; i += 2) {
@@ -122,14 +138,11 @@ public class Solution {
 		return temp;
 	}
 	
-	public Solution applyMutationFlipOrder(){
-		Solution temp = this.copy();
-		
-				
-		int triangleIndexOne = r.nextInt(instance.getNumberOfTriangles());
+	public Solution applyMutationFlipOrder(int triangleIndexOne){
+		Solution temp = this.copy();		
 		int triangleIndexTwo = r.nextInt(instance.getNumberOfTriangles());	
 		
-		for (int i = 0; i <= 10; i ++) {
+		for (int i = 0; i < 10; i ++) {
 
 			temp.values[triangleIndexOne * VALUES_PER_TRIANGLE + i] = values[triangleIndexTwo * VALUES_PER_TRIANGLE + i];	
 			temp.values[triangleIndexTwo * VALUES_PER_TRIANGLE + i] = values[triangleIndexOne * VALUES_PER_TRIANGLE + i];
