@@ -77,6 +77,8 @@ public class Main {
 		}
 		if (currentRun < NUMBER_OF_RUNS) {
 			run();
+		} else if(benchmarkPosition > 0) {
+			Benchmark.continueAt(benchmarkPosition, resultsAsCSV());
 		} else {
 			presentResults();
 		}
