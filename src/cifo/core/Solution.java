@@ -18,7 +18,7 @@ public class Solution {
 	protected double fitness;
 	protected Random r;
 	
-	public enum MutationOperator {oneValue, orderFlip, locationFlip, oneValueOccasionalFlipLocation};
+	public enum MutationOperator {oneValue, orderFlip, locationFlip, oneValueOccasionalFlipLocation, addorSubtractValues, deltaBased};
 	protected MutationOperator[] mutationOperators;
 
 	public Solution(ProblemInstance instance) {
@@ -106,7 +106,11 @@ public class Solution {
 					break;
 				case oneValueOccasionalFlipLocation:
 					temp=oneValueOccasionalFlipLocation(i);
-					break;			
+					break;	
+				case addorSubtractValues:
+					temp=applyAddorSubtractValues(i);
+				case deltaBased:
+					temp=applyDeltaBased(i);
 				}								
 			}
 		}			
@@ -171,6 +175,56 @@ public class Solution {
 		}
 		else{
 			temp=applyMutationFlipLocation(i/VALUES_PER_TRIANGLE);
+		}
+		return temp;
+	}
+	
+	public Solution applyAddorSubtractValues(int i){
+		
+		double changePercent=0.05;
+		int newValue;
+		if (r.nextInt(1)<1){
+			changePercent=-1*changePercent;
+		}
+		Solution temp = this.copy();
+		int triangleIndex = i/VALUES_PER_TRIANGLE;
+		int valueIndex = i-(triangleIndex*VALUES_PER_TRIANGLE);
+		//System.out.println("Old value " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
+		if (valueIndex < 4) {
+			newValue = temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]+(int) (255*changePercent);
+			if (newValue > 255){newValue = 255;}
+			if (newValue < 0){newValue = 0;}
+			temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = newValue;
+
+		} else {
+			if (valueIndex % 2 == 0) {
+				newValue=temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] +(int) (instance.getImageWidth()*changePercent);
+				if (newValue > instance.getImageWidth()){newValue = instance.getImageWidth();}
+				if (newValue < 0){newValue = 0;}
+				temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = newValue;
+
+			} else {
+				newValue=temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] + (int) (instance.getImageHeight()*changePercent);
+				if (newValue > instance.getImageHeight()){newValue = instance.getImageHeight();}
+				if (newValue < 0){newValue = 0;}
+				temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = newValue;
+				
+
+			}
+		}
+		//System.out.println("New value " + newValue);
+		return temp;
+	}
+	
+	public Solution applyDeltaBased(int i){
+		Solution temp = this.copy();
+		
+		if (fitness >12000){
+			temp = applyMutationOneValueChange(i);
+		}
+		
+		else{
+			temp = applyAddorSubtractValues(i);
 		}
 		return temp;
 	}
