@@ -18,13 +18,15 @@ public class Solution {
 	protected double fitness;
 	protected Random r;
 	
-	public enum MutationOperator {oneValue, orderFlip, locationFlip};
+	public enum MutationOperator {oneValue, orderFlip, locationFlip, oneValueOccasionalFlipLocation};
 	protected MutationOperator[] mutationOperators;
 
 	public Solution(ProblemInstance instance) {
 		this.instance = instance;
 		r = new Random();
+		mutationOperators = Main.MUTATION_OPERATORS;
 		initialize();
+		
 	}
 
 	public void initialize() {
@@ -102,6 +104,9 @@ public class Solution {
 				case locationFlip:
 					temp=applyMutationFlipLocation(i/VALUES_PER_TRIANGLE);
 					break;
+				case oneValueOccasionalFlipLocation:
+					temp=oneValueOccasionalFlipLocation(i);
+					break;			
 				}								
 			}
 		}			
@@ -154,6 +159,19 @@ public class Solution {
 			temp.values[triangleIndexTwo * VALUES_PER_TRIANGLE + i] = values[triangleIndexOne * VALUES_PER_TRIANGLE + i];
 		}
 		
+		return temp;
+	}
+	
+	
+	public Solution oneValueOccasionalFlipLocation(int i){
+		Solution temp = this.copy();
+		int num=r.nextInt(5);
+		if (num<3){
+			temp=applyMutationOneValueChange(i);
+		}
+		else{
+			temp=applyMutationFlipLocation(i/VALUES_PER_TRIANGLE);
+		}
 		return temp;
 	}
 	
