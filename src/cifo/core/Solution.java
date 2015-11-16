@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.util.Random;
 
+import cifo.searchMethods.GeneticAlgorithm.XOOperator;
+
 public class Solution {
 
 	public static final int VALUES_PER_TRIANGLE = 10;
@@ -15,6 +17,9 @@ public class Solution {
 	protected int[] values;
 	protected double fitness;
 	protected Random r;
+	
+	public enum MutationOperator {oneValue, orderFlip, locationFlip};
+	protected MutationOperator[] mutationOperators;
 
 	public Solution(ProblemInstance instance) {
 		this.instance = instance;
@@ -86,16 +91,18 @@ public class Solution {
 		for (int i = 0; i <temp.values.length; i++) {
 			if (r.nextDouble() <= mutationProbability) {
 				//if probability condition met, randomly apply one mutation method
-				int mutationChoice = r.nextInt(2);
-				if (mutationChoice == 0){
+				MutationOperator muOp = mutationOperators[r.nextInt(mutationOperators.length)];
+				switch(muOp) {
+				case oneValue:
 					temp=applyMutationOneValueChange(i);
-				}
-				else if (mutationChoice == 1){
-					temp=applyMutationFlipLocation(i/VALUES_PER_TRIANGLE);					
-				}
-				else if (mutationChoice == 2){
-					temp=applyMutationFlipOrder(i/VALUES_PER_TRIANGLE);					
-				}										
+					break;
+				case orderFlip:
+					temp=applyMutationFlipOrder(i/VALUES_PER_TRIANGLE);
+					break;
+				case locationFlip:
+					temp=applyMutationFlipLocation(i/VALUES_PER_TRIANGLE);
+					break;
+				}								
 			}
 		}			
 		return temp;	

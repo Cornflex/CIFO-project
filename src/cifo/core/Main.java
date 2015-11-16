@@ -2,6 +2,7 @@ package cifo.core;
 
 import cifo.utils.Statistics;
 import cifo.searchMethods.GeneticAlgorithm.XOOperator;
+import cifo.core.Solution.MutationOperator;
 import gd.gui.GeneticDrawingApp;
 
 public class Main {
@@ -33,8 +34,9 @@ public class Main {
 	public static Solution[] bestSolutions = new Solution[NUMBER_OF_RUNS];
 	public static double[] bestFitness = new double[NUMBER_OF_RUNS];
 	public static int currentRun = 0;
-
+	
 	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.alternating, XOOperator.frontMost};
+	public static MutationOperator[] MUTATION_OPERATORS = {MutationOperator.oneValue};
 	public static void main(String[] args) {
 		run();
 	}
