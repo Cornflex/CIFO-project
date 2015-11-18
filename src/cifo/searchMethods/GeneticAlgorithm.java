@@ -432,14 +432,14 @@ public class GeneticAlgorithm extends SearchMethod {
 			
 		}
 		
-		double bestOffspring=getBest(newPopulation).getFitness();
-		if (bestOffspring>currentBest.getFitness()){
-			printPopulationFitness(offspring);
-			printPopulationFitness(population);
-			for (int i=0;i<elites.length;i++){
-				System.out.println("worst in pop: " + newPopulation[worst[i]].getFitness()+ " Best in pop:" + elites[i].getFitness());
-			}
-		}
+//		double bestOffspring=getBest(newPopulation).getFitness();
+//		if (bestOffspring>currentBest.getFitness()){
+//			printPopulationFitness(offspring);
+//			printPopulationFitness(population);
+//			for (int i=0;i<elites.length;i++){
+//				System.out.println("worst in pop: " + newPopulation[worst[i]].getFitness()+ " Best in pop:" + elites[i].getFitness());
+//			}
+//		}
 				
 		return newPopulation;
 	}
