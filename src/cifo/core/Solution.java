@@ -18,7 +18,7 @@ public class Solution {
 	protected double fitness;
 	protected Random r;
 	
-	public enum MutationOperator {oneValue, orderFlip, locationFlip, oneValueOccasionalFlipLocation, addorSubtractValues, deltaBased};
+	public enum MutationOperator {oneValue, orderFlip, locationFlip, oneValueOccasionalFlipLocation, addorSubtractValues, deltaBased, manyValueChange};
 	protected MutationOperator[] mutationOperators;
 
 	public Solution(ProblemInstance instance) {
@@ -109,8 +109,13 @@ public class Solution {
 					break;	
 				case addorSubtractValues:
 					temp=applyAddorSubtractValues(i);
+					break;
 				case deltaBased:
 					temp=applyDeltaBased(i);
+					break;
+				case manyValueChange:
+					temp=applyMutationManyValueChange(i);
+					break;
 				}								
 			}
 		}			
@@ -135,7 +140,29 @@ public class Solution {
 		return temp;
 	}
 
-
+	public Solution applyMutationManyValueChange(int i){
+		Solution temp = this.copy();
+		
+		int triangleIndex = i/VALUES_PER_TRIANGLE;
+		//int valueIndex = i-(triangleIndex*VALUES_PER_TRIANGLE);
+		
+		for (int valueIndex=0; valueIndex<10; valueIndex++){
+			System.out.println("Original value " + valueIndex + ": " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
+			if (valueIndex < 4) {
+				temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(256);
+			} 
+			else {
+				if (valueIndex % 2 == 0) {
+					temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(instance.getImageWidth() + 1);
+				} else {
+					temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(instance.getImageHeight() + 1);
+				}
+			}
+			System.out.println("New value " + valueIndex + ": " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
+		}
+		
+		return temp;
+	}
 	
 	public Solution applyMutationFlipLocation(int triangleIndexOne){
 		Solution temp = this.copy();
@@ -189,6 +216,43 @@ public class Solution {
 		Solution temp = this.copy();
 		int triangleIndex = i/VALUES_PER_TRIANGLE;
 		int valueIndex = i-(triangleIndex*VALUES_PER_TRIANGLE);
+		System.out.println("Old value " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
+		if (valueIndex < 4) {
+			newValue = temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]+(int) (255*changePercent);
+			if (newValue > 255){newValue = 255;}
+			if (newValue < 0){newValue = 0;}
+			temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = newValue;
+
+		} else {
+			if (valueIndex % 2 == 0) {
+				newValue=temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] +(int) (instance.getImageWidth()*changePercent);
+				if (newValue > instance.getImageWidth()){newValue = instance.getImageWidth();}
+				if (newValue < 0){newValue = 0;}
+				temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = newValue;
+
+			} else {
+				newValue=temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] + (int) (instance.getImageHeight()*changePercent);
+				if (newValue > instance.getImageHeight()){newValue = instance.getImageHeight();}
+				if (newValue < 0){newValue = 0;}
+				temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = newValue;
+				
+
+			}
+		}
+		System.out.println("New value " + newValue);
+		return temp;
+	}
+	
+	public Solution applyManyAddorSubtractValues(int i){
+		
+		double changePercent=0.05;
+		int newValue;
+		if (r.nextInt(1)<1){
+			changePercent=-1*changePercent;
+		}
+		Solution temp = this.copy();
+		int triangleIndex = i/VALUES_PER_TRIANGLE;
+		int valueIndex = i-(triangleIndex*VALUES_PER_TRIANGLE);
 		//System.out.println("Old value " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
 		if (valueIndex < 4) {
 			newValue = temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]+(int) (255*changePercent);
@@ -215,6 +279,7 @@ public class Solution {
 		//System.out.println("New value " + newValue);
 		return temp;
 	}
+	
 	
 	public Solution applyDeltaBased(int i){
 		Solution temp = this.copy();
