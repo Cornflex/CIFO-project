@@ -42,7 +42,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		printFlag = false;
 		currentGeneration = 0;
 		useElitism = Main.USE_ELITISM;
-		if (useElitism){eliteNum = (int) Math.round(populationSize*Main.ELITE_PROPORTION);}
+		if (useElitism){eliteNum = (int) Math.ceil(populationSize*Main.ELITE_PROPORTION);}
 		else {eliteNum = 0;};
 		
 		useDynamicPopulationSize = false;
@@ -90,14 +90,30 @@ public class GeneticAlgorithm extends SearchMethod {
 			else{
 				population=offspring;
 			}
+			
+			
 			Solution lastBest = this.currentBest;
 			updateCurrentBest();
+			
+
 			if(useDynamicPopulationSize && this.currentGeneration > 2) {
 				adaptPopulationSize(lastBest, currentBest);
 				System.out.println(populationSize);
 			}
 			updateInfo();
 			currentGeneration++;
+		}
+	}
+	
+	
+	public void printPopulationFitness(Solution[] pop){
+		double[] fitness = new double[population.length];
+		for(int i=0; i<pop.length;i++){
+			fitness[i]=pop[i].getFitness();
+		}
+		Arrays.sort(fitness);
+		for(int i=0; i<pop.length;i++){
+		System.out.println("Solution " +i +": "+ fitness[i]);
 		}
 	}
 
@@ -401,18 +417,30 @@ public class GeneticAlgorithm extends SearchMethod {
 	}
 	
 
-	//implementation of elitism
+	//If best solutions of current pop are better than best offspring solution, they replace one of the worst offspring solutions
+	//maximum solutions carried over is set by ELITE_PROPORTION field
 	public Solution[] survivorSelection(Solution[] offspring) {
 
 		Solution[] newPopulation = offspring;
-		Solution[] best = GetElites();
+		Solution[] elites = GetElites();
 		int[] worst = GetWorst(offspring);
-		for (int i=0;i<best.length;i++){
+		double bestOffspringFitness  = getBest(offspring).getFitness();
+		for (int i=0;i<elites.length;i++){
+			if (elites[i].getFitness()<bestOffspringFitness){
+				newPopulation[worst[i]] = elites[i];
+			}
 			
-			newPopulation[worst[i]] = best[i];
 		}
 		
-		
+		double bestOffspring=getBest(newPopulation).getFitness();
+		if (bestOffspring>currentBest.getFitness()){
+			printPopulationFitness(offspring);
+			printPopulationFitness(population);
+			for (int i=0;i<elites.length;i++){
+				System.out.println("worst in pop: " + newPopulation[worst[i]].getFitness()+ " Best in pop:" + elites[i].getFitness());
+			}
+		}
+				
 		return newPopulation;
 	}
 
