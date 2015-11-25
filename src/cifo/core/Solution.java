@@ -9,7 +9,7 @@ import java.util.Random;
 
 import cifo.searchMethods.GeneticAlgorithm.XOOperator;
 
-public class Solution {
+public class Solution implements Comparable<Solution> {
 
 	public static final int VALUES_PER_TRIANGLE = 10;
 
@@ -462,5 +462,19 @@ public class Solution {
 		int[] ys = new int[] { getYFromVertex1(triangleIndex), getYFromVertex2(triangleIndex),
 				getYFromVertex3(triangleIndex) };
 		return new Polygon(xs, ys, 3);
+	}
+
+	@Override
+	public int compareTo(Solution solution) {
+		double diff = this.getFitness() - solution.getFitness();
+		if(diff < 0) {
+			return -1;
+		}
+		else if(diff > 0) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
 	}
 }

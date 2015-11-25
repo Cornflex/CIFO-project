@@ -58,7 +58,7 @@ public class Benchmark {
 			double[] mutationProbablilities = {0.1};
 			int[] tournamentSizes = {4};
 			int[] triangleNumbers = {100};
-			XOOperator[][] xoOperatorCombinations = {{XOOperator.vertexBased}, {XOOperator.colorBased}, {XOOperator.multiPointComplete}, {XOOperator.multiPointRandomFeature},{XOOperator.alternating}, {XOOperator.frontMost}};
+			XOOperator[][] xoOperatorCombinations = {{XOOperator.complete,XOOperator.alternating},{XOOperator.complete,XOOperator.alternating,XOOperator.multiPointRandomFeature}};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
 			for(int i = 0; i < populationSizes.length; i++) {
