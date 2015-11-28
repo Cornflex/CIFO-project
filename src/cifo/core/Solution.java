@@ -199,12 +199,15 @@ public class Solution implements Comparable<Solution> {
 	
 	public Solution oneValueOccasionalFlipLocation(int i){
 		Solution temp = this.copy();
-		int num=r.nextInt(5);
-		if (num<3){
+		int num=r.nextInt(4);
+		if (num<2){
 			temp=applyMutationOneValueChange(i);
 		}
-		else{
+		else if (num==2){
 			temp=applyMutationFlipLocation(i/VALUES_PER_TRIANGLE);
+		}
+		else if (num==3){
+			temp=applyMutationFlipOrder(i/VALUES_PER_TRIANGLE);
 		}
 		return temp;
 	}
