@@ -69,6 +69,41 @@ public class Solution implements Comparable<Solution> {
 
 		fitness = Math.sqrt((double) sum);
 	}
+	
+	public double[] evaluateGrid() {
+		BufferedImage generatedImage = createImage();
+		int[] generatedPixels = new int[400];
+		double[] gridFitness =  new double[100];
+		long sum = 0;
+		int gridNum = 0;
+		for (int x=0;x<=180;x+=20){
+			for (int y=0;y<=180;y+=20){
+				//update to start at x and y values
+				PixelGrabber pg = new PixelGrabber(generatedImage, 0, 0, 20, 20,
+						generatedPixels, 0, generatedImage.getWidth());
+				try {
+					pg.grabPixels();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				int[] targetPixels = instance.getTargetPixels();
+				for (int i = 0; i < generatedPixels.length && i < targetPixels.length; i++) {
+					int c1 = targetPixels[i];
+					int c2 = generatedPixels[i];
+					int red = ((c1 >> 16) & 0xff) - ((c2 >> 16) & 0xff);
+					int green = ((c1 >> 8) & 0xff) - ((c2 >> 8) & 0xff);
+					int blue = (c1 & 0xff) - (c2 & 0xff);
+					sum += red * red + green * green + blue * blue;
+				}
+				gridFitness[gridNum] = Math.sqrt((double) sum);
+				gridNum++;
+			}
+		}
+		
+		return gridFitness;
+		
+	}
 
 	//method from original code, not in use
 	public Solution applyMutation() {
@@ -87,12 +122,47 @@ public class Solution implements Comparable<Solution> {
 		return temp;
 	}
 	
+	public void getGridFitness(){
+		
+		double[] gridFitness = evaluateGrid();
+		Solution temp = this.copy();
+		boolean[] intersect = new boolean[temp.values.length/10];
+		double fitnessSum=0;
+		int gridNum = 0;
+		for (int i = 0; i <temp.values.length/10; i++) {
+			Polygon triangle = expressPolygon(i);
+			for (int x=0;x<=180;x+=20){
+				for (int y=0;y<=180;y+=20){
+					if(triangle.intersects(x,y,20,20)){
+						fitnessSum += gridFitness[gridNum];
+					}
+					gridNum++;
+				}
+			}			
+			
+		}
+
+//		if (fitnessSum<avgFitness){
+//			applyMutationTest(0.5);
+//		}
+//		else{
+//			//apply mutation at a lower rate
+//			applyMutationTest(lowMutationRate);
+//		}
+//			
+	}
+			
+	
 
 	public Solution applyMutationTest(double mutationProbability) {
 		Solution temp = this.copy();
-		for (int i = 0; i <temp.values.length; i++) {
+		int numMuts=0;
+		int numTris=0;
+		for (int i = 0; i <instance.getNumberOfTriangles(); i++) {
+			numTris++;
 			if (r.nextDouble() <= mutationProbability) {
-				//if probability condition met, randomly apply one mutation method
+				numMuts++;
+				//if probability condition met, randomly apply one of the mutation methods entered as parameters
 				MutationOperator muOp = mutationOperators[r.nextInt(mutationOperators.length)];
 				switch(muOp) {
 				case oneValue:
@@ -126,11 +196,9 @@ public class Solution implements Comparable<Solution> {
 		}
 			
 	
-	public Solution applyMutationOneValueChange(int i){
-		Solution temp = this.copy();
-		
-		int triangleIndex = i/VALUES_PER_TRIANGLE;
-		int valueIndex = i-(triangleIndex*VALUES_PER_TRIANGLE);
+	public Solution applyMutationOneValueChange(int triangleIndex){
+		Solution temp = this.copy();		
+		int valueIndex = r.nextInt(VALUES_PER_TRIANGLE);
 		if (valueIndex < 4) {
 			temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex] = r.nextInt(256);
 		} else {
@@ -143,12 +211,9 @@ public class Solution implements Comparable<Solution> {
 		return temp;
 	}
 
-	public Solution applyMutationManyValueChange(int i){
+	public Solution applyMutationManyValueChange(int triangleIndex){
 		Solution temp = this.copy();
-		
-		int triangleIndex = i/VALUES_PER_TRIANGLE;
-		//int valueIndex = i-(triangleIndex*VALUES_PER_TRIANGLE);
-		
+				
 		for (int valueIndex=0; valueIndex<10; valueIndex++){
 
 			if (valueIndex < 4) {
@@ -197,22 +262,22 @@ public class Solution implements Comparable<Solution> {
 	}
 	
 	
-	public Solution oneValueOccasionalFlipLocation(int i){
+	public Solution oneValueOccasionalFlipLocation(int triangleIndex){
 		Solution temp = this.copy();
 		int num=r.nextInt(4);
 		if (num<2){
-			temp=applyMutationOneValueChange(i);
+			temp=applyMutationOneValueChange(triangleIndex);
 		}
 		else if (num==2){
-			temp=applyMutationFlipLocation(i/VALUES_PER_TRIANGLE);
+			temp=applyMutationFlipLocation(triangleIndex);
 		}
 		else if (num==3){
-			temp=applyMutationFlipOrder(i/VALUES_PER_TRIANGLE);
+			temp=applyMutationFlipOrder(triangleIndex);
 		}
 		return temp;
 	}
 	
-	public Solution applyAddorSubtractValues(int i){
+	public Solution applyAddorSubtractValues(int triangleIndex){
 		
 		double changePercent=0.05;
 		int newValue;
@@ -220,8 +285,7 @@ public class Solution implements Comparable<Solution> {
 			changePercent=-1*changePercent;
 		}
 		Solution temp = this.copy();
-		int triangleIndex = i/VALUES_PER_TRIANGLE;
-		int valueIndex = i-(triangleIndex*VALUES_PER_TRIANGLE);
+		int valueIndex = r.nextInt(VALUES_PER_TRIANGLE);
 		System.out.println("Old value " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
 		if (valueIndex < 4) {
 			newValue = temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]+(int) (255*changePercent);
@@ -249,19 +313,15 @@ public class Solution implements Comparable<Solution> {
 		return temp;
 	}
 	
-	public Solution applyManyAddorSubtractValues(int i){
+	public Solution applyManyAddorSubtractValues(int triangleIndex){
 		
 		double changePercent=0.05;
 		int newValue;
 		//make percent change negative with 50% probability
 		if (r.nextInt(1)<1){
 			changePercent=-1*changePercent;
-		}
-		
-		Solution temp = this.copy();
-		
-		int triangleIndex = i/VALUES_PER_TRIANGLE;
-		
+		}		
+		Solution temp = this.copy();		
 		for (int valueIndex=0; valueIndex<10; valueIndex++){
 			System.out.println("Original value " + valueIndex + ": " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
 			if (valueIndex < 4) {
@@ -291,15 +351,15 @@ public class Solution implements Comparable<Solution> {
 	}
 	
 	
-	public Solution applyDeltaBased(int i){
+	public Solution applyDeltaBased(int triangleIndex){
 		Solution temp = this.copy();
 		
 		if (fitness >12000){
-			temp = applyMutationOneValueChange(i);
+			temp = applyMutationOneValueChange(triangleIndex);
 		}
 		
 		else{
-			temp = applyAddorSubtractValues(i);
+			temp = applyAddorSubtractValues(triangleIndex);
 		}
 		return temp;
 	}

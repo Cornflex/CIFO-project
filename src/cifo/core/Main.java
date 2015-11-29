@@ -12,7 +12,7 @@ public class Main {
 	}
 
 	public static SearchMethods SEARCH_METHOD = SearchMethods.GA;
-	// public static SearchMethods SEARCH_METHOD = SearchMethods.HC;
+	//public static SearchMethods SEARCH_METHOD = SearchMethods.HC;
 	// public static SearchMethods SEARCH_METHOD = SearchMethods.RS;
 
 	public static int NUMBER_OF_TRIANGLES = 100;
@@ -21,7 +21,7 @@ public class Main {
 	public static int NUMBER_OF_GENERATIONS = 500;
 	public static int POPULATION_SIZE = 50;
 	public static int NEIGHBORHOOD_SIZE = 10;
-	public static double MUTATION_PROBABILIY = 0.002;
+	public static double MUTATION_PROBABILIY = 0.02;
 	public static int TOURNAMENT_SIZE = 3;
 	public static boolean USE_ELITISM = true;
 	public static double ELITE_PROPORTION = 0.05;
