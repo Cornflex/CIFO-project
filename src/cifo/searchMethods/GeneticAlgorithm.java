@@ -102,7 +102,9 @@ public class GeneticAlgorithm extends SearchMethod {
 			if(useDynamicPopulationSize >= 0 && this.currentGeneration > useDynamicPopulationSize) {
 				String populationSizeChange = this.populationSize + " --> ";
 				String debug = adaptPopulationSize(lastBest, currentBest);
-				System.out.println(debug + "\t" + populationSizeChange + this.populationSize);
+				if (printFlag) {
+					System.out.println(debug + "\t" + populationSizeChange + this.populationSize);
+				}
 			}
 			updateInfo();
 			currentGeneration++;
@@ -222,7 +224,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		MutationOperator[] muOps = {MutationOperator.orderFlip, MutationOperator.locationFlip, MutationOperator.manyValueChange, MutationOperator.manyValueAddSubtract};
 		for(int i = 0; i < count; i++) {
 			// generate a new individual from the best, based on mutation
-			newPopulation[i] = bestIndividuals[i].applyMutationTest(0.2, muOps);
+			newPopulation[i] = bestIndividuals[i].applyMutationTest(0.3, muOps);
 		}
 		for(int i = count; i < newPopulation.length; i++) {
 			newPopulation[i] = population[i-count];

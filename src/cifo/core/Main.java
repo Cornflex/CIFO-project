@@ -36,6 +36,8 @@ public class Main {
 	public static double[] bestFitness = new double[NUMBER_OF_RUNS];
 	public static int currentRun = 0;
 	
+	public static long startTime;
+	
 	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.alternating, XOOperator.frontMost};
 	public static MutationOperator[] MUTATION_OPERATORS = {MutationOperator.oneValue};
 	public static void main(String[] args) {
@@ -62,6 +64,7 @@ public class Main {
 		bestSolutions = new Solution[NUMBER_OF_RUNS];
 		bestFitness = new double[NUMBER_OF_RUNS];
 		currentRun = 0;
+		startTime = System.currentTimeMillis();
 		main(null);
 		
 	}
@@ -126,7 +129,8 @@ public class Main {
 				+ best + ","
 				+ worst + ","
 				+ xoOps + ","
-				+ USE_DYNAMIC_POPULATION_SIZE
+				+ USE_DYNAMIC_POPULATION_SIZE + ","
+				+ Math.round((System.currentTimeMillis() - startTime) / 1000)
 		);
 		//System.out.printf("Results\t\t%.2f +- %.2f\t%.2f\t%.2f\n", mean, stdDev, best, worst);
 	}
