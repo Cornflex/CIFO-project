@@ -75,7 +75,7 @@ public class Benchmark {
 							for(int l = 0; l < xoOperatorCombinations.length; l++) {
 								for(int m = 0; m < triangleNumbers.length; m++) {
 									for(int n = 0; n < useDynamicPopulationSize.length; n++) {
-										for(int o = 0; n < muOperatorCombinations.length; o++) {
+										for(int o = 0; o < muOperatorCombinations.length; o++) {
 											parameterSet.add(new ParameterSet(SEARCH_METHOD, triangleNumbers[m], NUMBER_OF_RUNS, NUMBER_OF_GENERATIONS, populationSizes[i], mutationProbablilities[j], tournamentSizes[k], xoOperatorCombinations[l], useDynamicPopulationSize[n], muOperatorCombinations[o]));
 										}
 									}
