@@ -25,6 +25,7 @@ public class Main {
 	public static int TOURNAMENT_SIZE = 3;
 	public static boolean USE_ELITISM = true;
 	public static double ELITE_PROPORTION = 0.05;
+	public static boolean USE_DYNAMIC_POPULATION_SIZE = false;
 	
 	public static int benchmarkPosition = 0;
 
@@ -53,6 +54,7 @@ public class Main {
 		Main.MUTATION_PROBABILIY = parameterSet.MUTATION_PROBABILIY;
 		Main.TOURNAMENT_SIZE = parameterSet.TOURNAMENT_SIZE;
 		Main.CROSSOVER_OPERATORS = parameterSet.CROSSOVER_OPERATORS;
+		Main.USE_DYNAMIC_POPULATION_SIZE = parameterSet.USE_DYNAMIC_POPULATION_SIZE;
 		
 		// set other parameters
 		KEEP_WINDOWS_OPEN = false;
@@ -123,7 +125,8 @@ public class Main {
 				+ stdDev + ","
 				+ best + ","
 				+ worst + ","
-				+ xoOps
+				+ xoOps + ","
+				+ USE_DYNAMIC_POPULATION_SIZE
 		);
 		//System.out.printf("Results\t\t%.2f +- %.2f\t%.2f\t%.2f\n", mean, stdDev, best, worst);
 	}

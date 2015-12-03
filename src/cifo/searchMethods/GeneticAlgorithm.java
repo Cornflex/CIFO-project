@@ -29,7 +29,6 @@ public class GeneticAlgorithm extends SearchMethod {
 	protected double lastDelta;
 	protected double pivotSum;
 	protected int period;
-	protected double averageFitness; // #forKristen
 
 	public GeneticAlgorithm() {
 		instance = new ProblemInstance(Main.NUMBER_OF_TRIANGLES);
@@ -45,7 +44,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		useElitism = Main.USE_ELITISM;
 		eliteNum = (int) Math.ceil(populationSize*Main.ELITE_PROPORTION);
 		
-		useDynamicPopulationSize = true;
+		useDynamicPopulationSize = Main.USE_DYNAMIC_POPULATION_SIZE;
 		period = 20;
 		
 		r = new Random();
@@ -100,7 +99,7 @@ public class GeneticAlgorithm extends SearchMethod {
 			if(useDynamicPopulationSize && this.currentGeneration > 2) {
 				String populationSizeChange = this.populationSize + " --> ";
 				String debug = adaptPopulationSize(lastBest, currentBest);
-				//System.out.println(populationSizeChange + this.populationSize + " " + debug);
+				System.out.println(populationSizeChange + this.populationSize + " " + debug);
 			}
 			updateInfo();
 			currentGeneration++;
@@ -153,12 +152,12 @@ public class GeneticAlgorithm extends SearchMethod {
 		if(currentDelta > pivot) {
 			double relativeDelta = (currentDelta / initialFitness) * 100;
 			int suppressCount =  (int) Math.ceil(Math.ceil(0.1 * populationSize) * currentDelta);
-			//suppressPopulation( 3 );
+			suppressPopulation( 3 );
 		}
 		else {
 			double relativeDelta = 100 - (currentDelta / initialFitness) * 100;
 			int increaseCount =  (int) Math.ceil(Math.ceil(0.05 * populationSize) * currentDelta);
-			//increasePopulation( 3 );
+			increasePopulation( 3 );
 		}
 		lastDelta = currentDelta;
 		return (currentDelta>pivot? "-" : "+") + "\t" + (int)Math.floor(currentDelta) + "\t" + (int)Math.floor(pivot) + "\t" + (int)Math.floor(currentDelta - pivot);
@@ -167,9 +166,29 @@ public class GeneticAlgorithm extends SearchMethod {
 	
 
 	private void suppressPopulation(int count) {
-//		if(populationSize - count < minPopulationSize) {
-//			count = populationSize - 
-//		}
+		if(populationSize - count < minPopulationSize) {
+			count = populationSize - minPopulationSize;
+		}
+		populationSize -= count;
+		population = getBest(population, populationSize);
+	}
+
+	private void increasePopulation(int count) {
+		if(populationSize + count > maxPopulationSize) {
+			count = maxPopulationSize - populationSize;
+		}
+		populationSize += count;
+		Solution[] newPopulation = new Solution[populationSize];
+		Solution[] bestIndividuals = getBest(population, count);
+		for(int i = 0; i < count; i++) {
+			// generate a new individual from the best, based on mutation
+			newPopulation[i] = bestIndividuals[i].applyMutationTest(0.05);
+		}
+		for(int i = count; i < newPopulation.length; i++) {
+			newPopulation[i] = population[i-count];
+		}
+		population = newPopulation;
+		Arrays.sort(population);
 	}
 
 	public Solution applyCrossover(int[] parents) {

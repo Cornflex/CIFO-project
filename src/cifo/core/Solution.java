@@ -70,7 +70,7 @@ public class Solution implements Comparable<Solution> {
 		fitness = Math.sqrt((double) sum);
 	}
 
-	//method from original code, not in use
+	//method from original code
 	public Solution applyMutation() {
 		Solution temp = this.copy();
 		int triangleIndex = r.nextInt(instance.getNumberOfTriangles());

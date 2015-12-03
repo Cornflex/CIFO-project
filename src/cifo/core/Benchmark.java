@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import cifo.searchMethods.GeneticAlgorithm.XOOperator;
 
 public class Benchmark {
-	private static String results = "\nSEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,mean,stdDev,best,worst,XO";
+	private static String results = "\nSEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,mean,stdDev,best,worst,XO,DynPop";
 	private static ParameterSet[] parameterSets;
 	
 	public static void main(String args[]) {
@@ -40,8 +40,9 @@ public class Benchmark {
 		public double MUTATION_PROBABILIY;
 		public int TOURNAMENT_SIZE;
 		public XOOperator[] CROSSOVER_OPERATORS;
+		public boolean USE_DYNAMIC_POPULATION_SIZE;
 
-		public ParameterSet(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS, int POPULATION_SIZE, double MUTATION_PROBABILIY, int TOURNAMENT_SIZE, XOOperator[] xoOperators) {
+		public ParameterSet(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS, int POPULATION_SIZE, double MUTATION_PROBABILIY, int TOURNAMENT_SIZE, XOOperator[] xoOperators, boolean dynPopSize) {
 			this.SEARCH_METHOD = SEARCH_METHOD;
 			this.NUMBER_OF_TRIANGLES = NUMBER_OF_TRIANGLES;
 			this.NUMBER_OF_RUNS = NUMBER_OF_RUNS;
@@ -51,6 +52,7 @@ public class Benchmark {
 			this.MUTATION_PROBABILIY = MUTATION_PROBABILIY;
 			this.TOURNAMENT_SIZE = TOURNAMENT_SIZE;
 			this.CROSSOVER_OPERATORS = xoOperators;
+			this.USE_DYNAMIC_POPULATION_SIZE = dynPopSize;
 		}
 
 		public static ParameterSet[] generateParameterSets(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS) {
@@ -59,6 +61,7 @@ public class Benchmark {
 			int[] tournamentSizes = {4};
 			int[] triangleNumbers = {100};
 			XOOperator[][] xoOperatorCombinations = {{XOOperator.complete,XOOperator.alternating},{XOOperator.complete,XOOperator.alternating,XOOperator.multiPointRandomFeature}};
+			boolean[] useDynamicPopulationSize = {true, false};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
 			for(int i = 0; i < populationSizes.length; i++) {
@@ -66,7 +69,9 @@ public class Benchmark {
 						for(int k = 0; k < tournamentSizes.length; k++) {
 							for(int l = 0; l < xoOperatorCombinations.length; l++) {
 								for(int m = 0; m < triangleNumbers.length; m++) {
-									parameterSet.add(new ParameterSet(SEARCH_METHOD, triangleNumbers[m], NUMBER_OF_RUNS, NUMBER_OF_GENERATIONS, populationSizes[i], mutationProbablilities[j], tournamentSizes[k], xoOperatorCombinations[l]));
+									for(int n = 0; n < useDynamicPopulationSize.length; n++) {
+										parameterSet.add(new ParameterSet(SEARCH_METHOD, triangleNumbers[m], NUMBER_OF_RUNS, NUMBER_OF_GENERATIONS, populationSizes[i], mutationProbablilities[j], tournamentSizes[k], xoOperatorCombinations[l], useDynamicPopulationSize[n]));
+									}
 								}
 						}
 					}
