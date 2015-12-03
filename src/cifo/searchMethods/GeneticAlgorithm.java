@@ -370,4 +370,58 @@ public class GeneticAlgorithm extends SearchMethod {
 			System.out.printf("Generation: %d\tFitness: %.1f\n", currentGeneration, currentBest.getFitness());
 		}
 	}
+	public double calculateGenotypicEntropy(Solution[] zombiePool) {
+		Solution origin = zombiePool[r.nextInt(zombiePool.length)];
+		double[] distances = new double[zombiePool.length];
+		int minDistance = 0;
+		int maxDistance = 1 * Solution.VALUES_PER_TRIANGLE * Main.NUMBER_OF_TRIANGLES; // = 1000
+		ArrayList<ArrayList<Solution>> buckets = new ArrayList<>();
+		// create 100 buckets
+		for(int i = minDistance; i < 100; i ++) {
+			buckets.add(new ArrayList<Solution>());
+		}
+		for(int i = 0; i < zombiePool.length; i++) {
+			Solution individual = zombiePool[i];
+			double distance = calculateHemmingDistance(individual, origin);
+			for(int bucketNo = 0; bucketNo < buckets.size(); bucketNo++) {
+				if(distance < (maxDistance / buckets.size())*bucketNo) {
+					buckets.get(bucketNo).add(individual);
+					break;
+				}
+			}
+		}
+		// calculate entropy
+		double entropy = 0;
+		double maxEntropy = populationSize * Math.log(populationSize);
+		String bucketPrint = "|";
+		for(int bucketNo = 0; bucketNo < buckets.size(); bucketNo++) {
+			ArrayList<Solution> bucket = buckets.get(bucketNo);
+			bucketPrint += bucket.size() + "|";
+			if(bucket.size() > 0) {
+				entropy += bucket.size() * Math.log(bucket.size());
+			}
+		}
+		double diversity = (1 - entropy / maxEntropy)*100;
+		//System.out.println(bucketPrint);
+		//System.out.println("Diversity: " + Math.round(Math.round(diversity)) + "%\tEntropy: " + entropy + "\tMax Entropy: " + maxEntropy);
+		
+		return diversity;
+	}
+
+	private double calculateHemmingDistance(Solution solution, Solution origin) {
+		double distance = 0;
+		for(int triangleNo = 0; triangleNo < Main.NUMBER_OF_TRIANGLES; triangleNo++) {
+			for(int valueNo = 0; valueNo < Solution.VALUES_PER_TRIANGLE; valueNo++) {
+				double absoluteDistance = solution.getValue(triangleNo + valueNo) - origin.getValue(triangleNo + valueNo);
+				// standardize distance
+				if(valueNo < 4) {
+					distance += Math.abs(absoluteDistance) / 255;
+				}
+				else {
+					distance += Math.abs(absoluteDistance) / 200;
+				}
+			}
+		}
+		return distance;
+	}
 }
