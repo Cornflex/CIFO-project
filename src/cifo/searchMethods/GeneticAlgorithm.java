@@ -106,6 +106,19 @@ public class GeneticAlgorithm extends SearchMethod {
 		}
 	}
 	
+	
+	public double averagePopulationFitness(Solution[] pop){
+		double averageFitness = 0;
+		for(int i=0; i<pop.length;i++){
+			averageFitness+=pop[i].getFitness();
+		}
+		averageFitness=averageFitness/pop.length;
+		return averageFitness;
+	}
+		
+			
+	
+	//can be deleted
 	public void printPopulationFitness(Solution[] pop){
 		double[] fitness = new double[population.length];
 		for(int i=0; i<pop.length;i++){
