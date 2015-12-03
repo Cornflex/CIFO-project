@@ -6,6 +6,7 @@ import java.util.Random;
 import cifo.core.Main;
 import cifo.core.ProblemInstance;
 import cifo.core.Solution;
+import cifo.core.Solution.MutationOperator;
 
 
 public class GeneticAlgorithm extends SearchMethod {
@@ -21,14 +22,16 @@ public class GeneticAlgorithm extends SearchMethod {
 	protected int currentGeneration;
 	protected Solution[] population;
 	protected Random r;
-	protected boolean useElitism, useDynamicPopulationSize;
+	protected boolean useElitism;
 	protected int eliteNum;
 	protected XOOperator[] crossoverOperators;
 
 	// Fields for dynamic population sizes
+	protected int useDynamicPopulationSize; // set to negative to disable dyn pop
 	protected double lastDelta;
 	protected double pivotSum;
 	protected int period;
+	protected double deltaSum;
 
 	public GeneticAlgorithm() {
 		instance = new ProblemInstance(Main.NUMBER_OF_TRIANGLES);
@@ -45,7 +48,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		eliteNum = (int) Math.ceil(populationSize*Main.ELITE_PROPORTION);
 		
 		useDynamicPopulationSize = Main.USE_DYNAMIC_POPULATION_SIZE;
-		period = 20;
+		period = 10;
 		
 		r = new Random();
 	}
@@ -96,10 +99,10 @@ public class GeneticAlgorithm extends SearchMethod {
 			updateCurrentBest();
 			
 
-			if(useDynamicPopulationSize && this.currentGeneration > 2) {
+			if(useDynamicPopulationSize >= 0 && this.currentGeneration > useDynamicPopulationSize) {
 				String populationSizeChange = this.populationSize + " --> ";
 				String debug = adaptPopulationSize(lastBest, currentBest);
-				System.out.println(populationSizeChange + this.populationSize + " " + debug);
+				System.out.println(debug + "\t" + populationSizeChange + this.populationSize);
 			}
 			updateInfo();
 			currentGeneration++;
@@ -152,28 +155,50 @@ public class GeneticAlgorithm extends SearchMethod {
 	
 	private String adaptPopulationSize(Solution lastBest, Solution currentBest) {
 		double currentDelta = lastBest.getFitness() - currentBest.getFitness();
-		double pivot = lastDelta - currentDelta; // SUP method
-		if(currentGeneration % period == 0) {
-			pivot += pivotSum;
-			pivotSum = 0;
-			pivot = pivot / period;
+		if(currentGeneration % period != 0) {
+			deltaSum += currentDelta;
+			return "--";
 		}
 		else {
-			pivotSum += pivot;
+			double averageDelta = deltaSum / period;
+			deltaSum = 0;
+			if(averageDelta == 0) {
+				increasePopulation(5);
+			}
+			else if(averageDelta < 5) {
+				increasePopulation(3);
+			}
+			else if(averageDelta > 50) {
+				suppressPopulation(5);
+			}
+			else if(averageDelta > 8) {
+				suppressPopulation(3);
+			}
+			return Math.round(Math.round(averageDelta)) + "";
 		}
-				
-		if(currentDelta > pivot) {
-			double relativeDelta = (currentDelta / initialFitness) * 100;
-			int suppressCount =  (int) Math.ceil(Math.ceil(0.1 * populationSize) * currentDelta);
-			suppressPopulation( 3 );
-		}
-		else {
-			double relativeDelta = 100 - (currentDelta / initialFitness) * 100;
-			int increaseCount =  (int) Math.ceil(Math.ceil(0.05 * populationSize) * currentDelta);
-			increasePopulation( 3 );
-		}
-		lastDelta = currentDelta;
-		return (currentDelta>pivot? "-" : "+") + "\t" + (int)Math.floor(currentDelta) + "\t" + (int)Math.floor(pivot) + "\t" + (int)Math.floor(currentDelta - pivot);
+//		double pivot = lastDelta - currentDelta; // SUP method
+//		if(currentGeneration % period == 0) {
+//			pivot += pivotSum;
+//			pivotSum = 0;
+//			pivot = pivot / period;
+//		}
+//		else {
+//			pivotSum += pivot;
+//		}
+//				
+//		if(currentDelta > pivot) {
+//			double relativeDelta = (currentDelta / initialFitness) * 100;
+//			int suppressCount =  (int) Math.ceil(Math.ceil(0.1 * populationSize) * currentDelta);
+//			suppressPopulation( 3 );
+//		}
+//		else {
+//			double relativeDelta = 100 - (currentDelta / initialFitness) * 100;
+//			int increaseCount =  (int) Math.ceil(Math.ceil(0.05 * populationSize) * currentDelta);
+//			increasePopulation( 3 );
+//		}
+//		lastDelta = currentDelta;
+		
+//		return (currentDelta>pivot? "-" : "+") + "\t" + (int)Math.floor(currentDelta) + "\t" + (int)Math.floor(pivot) + "\t" + (int)Math.floor(currentDelta - pivot);
 	}
 
 	
@@ -188,14 +213,16 @@ public class GeneticAlgorithm extends SearchMethod {
 
 	private void increasePopulation(int count) {
 		if(populationSize + count > maxPopulationSize) {
+			suppressPopulation(count*2);
 			count = maxPopulationSize - populationSize;
 		}
 		populationSize += count;
 		Solution[] newPopulation = new Solution[populationSize];
 		Solution[] bestIndividuals = getBest(population, count);
+		MutationOperator[] muOps = {MutationOperator.orderFlip, MutationOperator.locationFlip, MutationOperator.manyValueChange, MutationOperator.manyValueAddSubtract};
 		for(int i = 0; i < count; i++) {
 			// generate a new individual from the best, based on mutation
-			newPopulation[i] = bestIndividuals[i].applyMutationTest(0.05);
+			newPopulation[i] = bestIndividuals[i].applyMutationTest(0.2, muOps);
 		}
 		for(int i = count; i < newPopulation.length; i++) {
 			newPopulation[i] = population[i-count];

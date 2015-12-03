@@ -155,6 +155,10 @@ public class Solution implements Comparable<Solution> {
 	
 
 	public Solution applyMutationTest(double mutationProbability) {
+		return applyMutationTest(mutationProbability, mutationOperators);
+	}
+	
+	public Solution applyMutationTest(double mutationProbability, MutationOperator[] muOps) {
 		Solution temp = this.copy();
 		int numMuts=0;
 		int numTris=0;
@@ -163,7 +167,7 @@ public class Solution implements Comparable<Solution> {
 			if (r.nextDouble() <= mutationProbability) {
 				numMuts++;
 				//if probability condition met, randomly apply one of the mutation methods entered as parameters
-				MutationOperator muOp = mutationOperators[r.nextInt(mutationOperators.length)];
+				MutationOperator muOp = muOps[r.nextInt(muOps.length)];
 				switch(muOp) {
 				case oneValue:
 					temp=applyMutationOneValueChange(i);
@@ -323,7 +327,7 @@ public class Solution implements Comparable<Solution> {
 		}		
 		Solution temp = this.copy();		
 		for (int valueIndex=0; valueIndex<10; valueIndex++){
-			System.out.println("Original value " + valueIndex + ": " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
+			//System.out.println("Original value " + valueIndex + ": " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
 			if (valueIndex < 4) {
 				newValue = temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]+(int) (255*changePercent);
 				if (newValue > 255){newValue = 255;}
@@ -345,7 +349,7 @@ public class Solution implements Comparable<Solution> {
 					
 				}
 			}
-			System.out.println("New value " + valueIndex + ": " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
+			//System.out.println("New value " + valueIndex + ": " + temp.values[triangleIndex * VALUES_PER_TRIANGLE + valueIndex]);
 		}
 		return temp;
 	}

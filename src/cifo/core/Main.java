@@ -18,14 +18,14 @@ public class Main {
 	public static int NUMBER_OF_TRIANGLES = 100;
 
 	public static int NUMBER_OF_RUNS = 3;
-	public static int NUMBER_OF_GENERATIONS = 500;
+	public static int NUMBER_OF_GENERATIONS = 2000;
 	public static int POPULATION_SIZE = 50;
 	public static int NEIGHBORHOOD_SIZE = 10;
 	public static double MUTATION_PROBABILIY = 0.02;
 	public static int TOURNAMENT_SIZE = 3;
 	public static boolean USE_ELITISM = true;
 	public static double ELITE_PROPORTION = 0.05;
-	public static boolean USE_DYNAMIC_POPULATION_SIZE = false;
+	public static int USE_DYNAMIC_POPULATION_SIZE = 150;
 	
 	public static int benchmarkPosition = 0;
 

@@ -10,7 +10,7 @@ public class Benchmark {
 	public static void main(String args[]) {
 		int fraction = 1;
 		int denominator = 1;
-		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 3, 500);
+		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 2, 2000);
 		parameterSets = ParameterSet.getPortion(fraction, denominator, fullSet);
 		System.out.println("Benchmark started. Testing " + parameterSets.length +" out of " + fullSet.length + " parameter combinations at fraction " + fraction + " of " + denominator);
 		Main.runInBenchmarkMode(1, parameterSets[0]);
@@ -40,9 +40,9 @@ public class Benchmark {
 		public double MUTATION_PROBABILIY;
 		public int TOURNAMENT_SIZE;
 		public XOOperator[] CROSSOVER_OPERATORS;
-		public boolean USE_DYNAMIC_POPULATION_SIZE;
+		public int USE_DYNAMIC_POPULATION_SIZE;
 
-		public ParameterSet(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS, int POPULATION_SIZE, double MUTATION_PROBABILIY, int TOURNAMENT_SIZE, XOOperator[] xoOperators, boolean dynPopSize) {
+		public ParameterSet(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS, int POPULATION_SIZE, double MUTATION_PROBABILIY, int TOURNAMENT_SIZE, XOOperator[] xoOperators, int dynPopSize) {
 			this.SEARCH_METHOD = SEARCH_METHOD;
 			this.NUMBER_OF_TRIANGLES = NUMBER_OF_TRIANGLES;
 			this.NUMBER_OF_RUNS = NUMBER_OF_RUNS;
@@ -60,8 +60,8 @@ public class Benchmark {
 			double[] mutationProbablilities = {0.1};
 			int[] tournamentSizes = {4};
 			int[] triangleNumbers = {100};
-			XOOperator[][] xoOperatorCombinations = {{XOOperator.complete,XOOperator.alternating},{XOOperator.complete,XOOperator.alternating,XOOperator.multiPointRandomFeature}};
-			boolean[] useDynamicPopulationSize = {true, false};
+			XOOperator[][] xoOperatorCombinations = {{XOOperator.complete}};
+			int[] useDynamicPopulationSize = {0, 150, -1};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
 			for(int i = 0; i < populationSizes.length; i++) {
