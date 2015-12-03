@@ -56,6 +56,7 @@ public class Main {
 		Main.MUTATION_PROBABILIY = parameterSet.MUTATION_PROBABILIY;
 		Main.TOURNAMENT_SIZE = parameterSet.TOURNAMENT_SIZE;
 		Main.CROSSOVER_OPERATORS = parameterSet.CROSSOVER_OPERATORS;
+		Main.MUTATION_OPERATORS = parameterSet.MUTATION_OPERATORS;
 		Main.USE_DYNAMIC_POPULATION_SIZE = parameterSet.USE_DYNAMIC_POPULATION_SIZE;
 		
 		// set other parameters
@@ -115,6 +116,11 @@ public class Main {
 			xoOps += xoOp.name() + "/";
 		}
 		xoOps = xoOps.substring(0, xoOps.length() - 1);
+		String muOps = "";
+		for(MutationOperator muOp : Main.MUTATION_OPERATORS) {
+			muOps += muOp.name() + "/";
+		}
+		muOps = muOps.substring(0, muOps.length() - 1);
 		return(
 				SEARCH_METHOD + ","
 				+ NUMBER_OF_TRIANGLES + ","
@@ -130,7 +136,8 @@ public class Main {
 				+ worst + ","
 				+ xoOps + ","
 				+ USE_DYNAMIC_POPULATION_SIZE + ","
-				+ Math.round((System.currentTimeMillis() - startTime) / 1000)
+				+ Math.round((System.currentTimeMillis() - startTime) / 1000) + ","
+				+ muOps
 		);
 		//System.out.printf("Results\t\t%.2f +- %.2f\t%.2f\t%.2f\n", mean, stdDev, best, worst);
 	}
