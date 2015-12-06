@@ -12,6 +12,7 @@ import cifo.searchMethods.GeneticAlgorithm.XOOperator;
 public class Solution implements Comparable<Solution> {
 
 	public static final int VALUES_PER_TRIANGLE = 10;
+	public static final int GRID_Width = 50;
 
 	protected ProblemInstance instance;
 	protected int[] values;
@@ -72,15 +73,16 @@ public class Solution implements Comparable<Solution> {
 	
 	public double[] evaluateGrid() {
 		BufferedImage generatedImage = createImage();
-		int[] generatedPixels = new int[400];
-		double[] gridFitness =  new double[100];
+		int[] generatedPixels = new int[2500];
+		double[] gridFitness =  new double[16];
 		long sum = 0;
 		int gridNum = 0;
-		for (int x=0;x<=180;x+=20){
-			for (int y=0;y<=180;y+=20){
+		for (int x=0;x<=150;x+=50){
+			for (int y=0;y<=150;y+=50){
 				//update to start at x and y values
-				PixelGrabber pg = new PixelGrabber(generatedImage, 0, 0, 20, 20,
-						generatedPixels, 0, generatedImage.getWidth());
+				
+				PixelGrabber pg = new PixelGrabber(generatedImage, 0, 0, 50, 50,
+						generatedPixels, 0, 50);
 				try {
 					pg.grabPixels();
 				} catch (InterruptedException e) {
@@ -96,6 +98,7 @@ public class Solution implements Comparable<Solution> {
 					int blue = (c1 & 0xff) - (c2 & 0xff);
 					sum += red * red + green * green + blue * blue;
 				}
+				System.out.println(gridNum);
 				gridFitness[gridNum] = Math.sqrt((double) sum);
 				gridNum++;
 			}
@@ -122,46 +125,46 @@ public class Solution implements Comparable<Solution> {
 		return temp;
 	}
 	
-	public void getGridFitness(){
+	public Solution applyMutationGrid(double mutationProbability,double averageFitness){
 		
 		double[] gridFitness = evaluateGrid();
+		System.out.println("grid length " + gridFitness.length);
 		Solution temp = this.copy();
-		boolean[] intersect = new boolean[temp.values.length/10];
+		
 		double fitnessSum=0;
-		int gridNum = 0;
-		for (int i = 0; i <temp.values.length/10; i++) {
+		
+		for (int i = 0; i <temp.values.length/VALUES_PER_TRIANGLE; i++) {
+			int gridNum = 0;
 			Polygon triangle = expressPolygon(i);
-			for (int x=0;x<=180;x+=20){
-				for (int y=0;y<=180;y+=20){
-					if(triangle.intersects(x,y,20,20)){
+			for (int x=0;x<=150;x+=50){
+				for (int y=0;y<=150;y+=50){
+					if(triangle.intersects(x,y,50,50)){
+						System.out.println(gridNum);
 						fitnessSum += gridFitness[gridNum];
 					}
+					System.out.println(gridNum);
 					gridNum++;
 				}
 			}			
 			
 		}
-
-//		if (fitnessSum<avgFitness){
-//			applyMutationTest(0.5);
-//		}
-//		else{
-//			//apply mutation at a lower rate
-//			applyMutationTest(lowMutationRate);
-//		}
-			
+		
+		if (fitnessSum/100<averageFitness){
+			temp=applyMutation(0.5);
+		}
+		else{
+			//apply mutation at a lower rate
+			temp=applyMutation(mutationProbability);
+		}
+		return temp;	
 	}
 			
 	
 
-	public Solution applyMutationTest(double mutationProbability) {
+	public Solution applyMutation(double mutationProbability) {
 		Solution temp = this.copy();
-		int numMuts=0;
-		int numTris=0;
 		for (int i = 0; i <instance.getNumberOfTriangles(); i++) {
-			numTris++;
 			if (r.nextDouble() <= mutationProbability) {
-				numMuts++;
 				//if probability condition met, randomly apply one of the mutation methods entered as parameters
 				MutationOperator muOp = mutationOperators[r.nextInt(mutationOperators.length)];
 				switch(muOp) {

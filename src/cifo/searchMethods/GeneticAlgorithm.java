@@ -74,13 +74,15 @@ public class GeneticAlgorithm extends SearchMethod {
 	
 	public void evolve() {
 		Arrays.sort(population);
+		averagePopulationFitness();
 		while (currentGeneration <= numberOfGenerations) {
 			Solution[] offspring = new Solution[populationSize];
 			for (int k = 0; k < population.length; k++) {
 				int[] parents = selectParents();
 				offspring[k] = applyCrossover(parents);
 
-				offspring[k] = offspring[k].applyMutation();
+				//offspring[k] = offspring[k].applyMutationGrid(mutationProbability,averageFitness);
+				offspring[k] = offspring[k].applyMutation(mutationProbability);
  				offspring[k].evaluate();
 			}
 			Arrays.sort(offspring);
@@ -107,16 +109,18 @@ public class GeneticAlgorithm extends SearchMethod {
 	}
 	
 	
-	public double averagePopulationFitness(Solution[] pop){
-		double averageFitness = 0;
-		for(int i=0; i<pop.length;i++){
-			averageFitness+=pop[i].getFitness();
+	public void averagePopulationFitness(){
+		double fitnessSum = 0;
+		for(int i=0; i<population.length;i++){
+			fitnessSum+=population[i].getFitness();
 		}
-		averageFitness=averageFitness/pop.length;
-		return averageFitness;
-	}
 		
-			
+		averageFitness=fitnessSum/population.length;
+	
+	}	
+	public double getAverageFitness() {
+		return averageFitness;
+	}		
 	
 	//can be deleted
 	public void printPopulationFitness(Solution[] pop){

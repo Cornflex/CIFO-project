@@ -37,7 +37,7 @@ public class Main {
 	public static int currentRun = 0;
 	
 	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.alternating, XOOperator.frontMost};
-	public static MutationOperator[] MUTATION_OPERATORS = {MutationOperator.oneValue};
+	public static MutationOperator[] MUTATION_OPERATORS = {MutationOperator.oneValue, MutationOperator.locationFlip};
 	public static void main(String[] args) {
 		run();
 	}
