@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.util.Random;
 
-import cifo.searchMethods.GeneticAlgorithm.XOOperator;
 
 public class Solution implements Comparable<Solution> {
 
