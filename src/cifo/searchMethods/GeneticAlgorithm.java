@@ -1,5 +1,6 @@
 package cifo.searchMethods;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -11,7 +12,7 @@ import cifo.core.Solution.MutationOperator;
 
 public class GeneticAlgorithm extends SearchMethod {
 
-	public enum XOOperator {vertexBased, colorBased, complete, multiPointComplete, multiPointRandomFeature, frontMost, alternating};
+	public enum XOOperator {VERTEX_BASED, COLOR_BASED, TRIANGLE_BASED, MULTI_TRIANGLE_BASED, MULTI_RANDOM_FEATURE, LAYER_BASED, ALTERNATING};
 	protected ProblemInstance instance;
 	protected int populationSize, numberOfGenerations, minPopulationSize, maxPopulationSize;
 	protected double mutationProbability;
@@ -32,6 +33,8 @@ public class GeneticAlgorithm extends SearchMethod {
 	protected double pivotSum;
 	protected int period;
 	protected double deltaSum;
+	
+	protected double sumDiversity;
 
 	public GeneticAlgorithm() {
 		instance = new ProblemInstance(Main.NUMBER_OF_TRIANGLES);
@@ -68,6 +71,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		updateCurrentBest();
 		updateInfo();
 		currentGeneration++;
+		sumDiversity = this.calculateGenotypicEntropy(population);
 	}
 
 	public void updateCurrentBest() {
@@ -105,6 +109,12 @@ public class GeneticAlgorithm extends SearchMethod {
 				if (printFlag) {
 					System.out.println(debug + "\t" + populationSizeChange + this.populationSize);
 				}
+			}			
+			sumDiversity += calculateGenotypicEntropy(population);
+			if(currentGeneration % period == 0) {
+				sumDiversity = sumDiversity / period;
+				//System.out.println("Gen " + currentGeneration + " diversity: " + Math.round(sumDiversity) +"%");
+				sumDiversity = 0;
 			}
 			updateInfo();
 			currentGeneration++;
@@ -165,15 +175,15 @@ public class GeneticAlgorithm extends SearchMethod {
 			double averageDelta = deltaSum / period;
 			deltaSum = 0;
 			if(averageDelta == 0) {
-				increasePopulation(5);
-			}
-			else if(averageDelta < 5) {
 				increasePopulation(3);
 			}
-			else if(averageDelta > 50) {
-				suppressPopulation(5);
-			}
-			else if(averageDelta > 8) {
+//			else if(averageDelta < 5) {
+//				increasePopulation(3);
+//			}
+//			else if(averageDelta > 50) {
+//				suppressPopulation(5);
+//			}
+			else if(averageDelta > 15) {
 				suppressPopulation(3);
 			}
 			return Math.round(Math.round(averageDelta)) + "";
@@ -242,25 +252,25 @@ public class GeneticAlgorithm extends SearchMethod {
 		// randomly choose XO Operator to be used
 		XOOperator xoOp = crossoverOperators[r.nextInt(crossoverOperators.length)];
 		switch(xoOp) {
-			case vertexBased:
+			case VERTEX_BASED:
 				vertexBasedCrossover(offspring, secondParent, crossoverPoint);
 				break;
-			case colorBased:
+			case COLOR_BASED:
 				colorBasedCrossover(offspring, secondParent, crossoverPoint);
 				break;
-			case multiPointComplete:
+			case MULTI_TRIANGLE_BASED:
 				multiPointCompleteCrossover(offspring, secondParent);
 				break;
-			case multiPointRandomFeature:
+			case MULTI_RANDOM_FEATURE:
 				multiPointRandomFeatureCrossover(offspring, secondParent);
 				break;
-			case complete:
+			case TRIANGLE_BASED:
 				completeCrossover(offspring, secondParent, crossoverPoint);
 				break;
-			case frontMost:
+			case LAYER_BASED:
 				frontMostCrossover(offspring, secondParent, crossoverPoint);
 				break;
-			case alternating:
+			case ALTERNATING:
 				alternatingCrossover(offspring, secondParent);
 				break;
 		}
@@ -370,6 +380,7 @@ public class GeneticAlgorithm extends SearchMethod {
 			System.out.printf("Generation: %d\tFitness: %.1f\n", currentGeneration, currentBest.getFitness());
 		}
 	}
+	
 	public double calculateGenotypicEntropy(Solution[] zombiePool) {
 		Solution origin = zombiePool[r.nextInt(zombiePool.length)];
 		double[] distances = new double[zombiePool.length];

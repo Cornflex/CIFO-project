@@ -17,7 +17,7 @@ public class Main {
 
 	public static int NUMBER_OF_TRIANGLES = 100;
 
-	public static int NUMBER_OF_RUNS = 3;
+	public static int NUMBER_OF_RUNS = 1;
 	public static int NUMBER_OF_GENERATIONS = 2000;
 	public static int POPULATION_SIZE = 50;
 	public static int NEIGHBORHOOD_SIZE = 10;
@@ -25,7 +25,7 @@ public class Main {
 	public static int TOURNAMENT_SIZE = 3;
 	public static boolean USE_ELITISM = true;
 	public static double ELITE_PROPORTION = 0.05;
-	public static int USE_DYNAMIC_POPULATION_SIZE = 150;
+	public static int USE_DYNAMIC_POPULATION_SIZE = -1;
 	
 	public static int benchmarkPosition = 0;
 
@@ -38,7 +38,7 @@ public class Main {
 	
 	public static long startTime;
 	
-	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.alternating, XOOperator.frontMost};
+	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.ALTERNATING, XOOperator.LAYER_BASED};
 	public static MutationOperator[] MUTATION_OPERATORS = {MutationOperator.oneValue};
 	public static void main(String[] args) {
 		run();

@@ -11,8 +11,8 @@ public class Benchmark {
 	
 	public static void main(String args[]) {
 		int fraction = 1;
-		int denominator = 3;
-		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 1, 2000);
+		int denominator = 1;
+		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 1, 1000);
 		parameterSets = ParameterSet.getPortion(fraction, denominator, fullSet);
 		System.out.println("Benchmark started. Testing " + parameterSets.length +" out of " + fullSet.length + " parameter combinations at fraction " + fraction + " of " + denominator);
 		Main.runInBenchmarkMode(1, parameterSets[0]);
@@ -45,13 +45,13 @@ public class Benchmark {
 		public int USE_DYNAMIC_POPULATION_SIZE;
 		public MutationOperator[] MUTATION_OPERATORS;
 
-		public ParameterSet(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS, int POPULATION_SIZE, double MUTATION_PROBABILIY, int TOURNAMENT_SIZE, XOOperator[] xoOperators, int dynPopSize, MutationOperator[] muOperators) {
+		public ParameterSet(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_TRIANGLES, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS, int POPULATION_SIZE, double MUTATION_PROBABILIY, int TOURNAMENT_SIZE, XOOperator[] xoOperators, int dynPopSize, MutationOperator[] muOperators, int ns) {
 			this.SEARCH_METHOD = SEARCH_METHOD;
 			this.NUMBER_OF_TRIANGLES = NUMBER_OF_TRIANGLES;
 			this.NUMBER_OF_RUNS = NUMBER_OF_RUNS;
 			this.NUMBER_OF_GENERATIONS = NUMBER_OF_GENERATIONS;
 			this.POPULATION_SIZE = POPULATION_SIZE;
-			this.NEIGHBORHOOD_SIZE = 4;
+			this.NEIGHBORHOOD_SIZE = ns;
 			this.MUTATION_PROBABILIY = MUTATION_PROBABILIY;
 			this.TOURNAMENT_SIZE = TOURNAMENT_SIZE;
 			this.CROSSOVER_OPERATORS = xoOperators;
@@ -60,13 +60,14 @@ public class Benchmark {
 		}
 
 		public static ParameterSet[] generateParameterSets(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS) {
-			int[] populationSizes = {50};
+			int[] populationSizes = {90};
 			double[] mutationProbablilities = {0.1};
+			int[] neighborhoodSizes = {4};
 			int[] tournamentSizes = {4};
 			int[] triangleNumbers = {100};
-			XOOperator[][] xoOperatorCombinations = {{XOOperator.complete}};
+			XOOperator[][] xoOperatorCombinations = {{XOOperator.TRIANGLE_BASED}};
 			MutationOperator[][] muOperatorCombinations = {{MutationOperator.oneValue}};
-			int[] useDynamicPopulationSize = {0, 150, -1};
+			int[] useDynamicPopulationSize = {-1};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
 			for(int i = 0; i < populationSizes.length; i++) {
@@ -76,7 +77,9 @@ public class Benchmark {
 								for(int m = 0; m < triangleNumbers.length; m++) {
 									for(int n = 0; n < useDynamicPopulationSize.length; n++) {
 										for(int o = 0; o < muOperatorCombinations.length; o++) {
-											parameterSet.add(new ParameterSet(SEARCH_METHOD, triangleNumbers[m], NUMBER_OF_RUNS, NUMBER_OF_GENERATIONS, populationSizes[i], mutationProbablilities[j], tournamentSizes[k], xoOperatorCombinations[l], useDynamicPopulationSize[n], muOperatorCombinations[o]));
+											for(int p = 0; p < neighborhoodSizes.length; p++) {
+												parameterSet.add(new ParameterSet(SEARCH_METHOD, triangleNumbers[m], NUMBER_OF_RUNS, NUMBER_OF_GENERATIONS, populationSizes[i], mutationProbablilities[j], tournamentSizes[k], xoOperatorCombinations[l], useDynamicPopulationSize[n], muOperatorCombinations[o], neighborhoodSizes[p]));
+											}
 										}
 									}
 								}
