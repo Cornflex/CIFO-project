@@ -116,7 +116,7 @@ public class GeneticAlgorithm extends SearchMethod {
 			sumDiversity += calculateGenotypicEntropy(population);
 			if(currentGeneration % period == 0) {
 				sumDiversity = sumDiversity / period;
-				//System.out.println("Gen " + currentGeneration + " diversity: " + Math.round(sumDiversity) +"%");
+				System.out.println("Gen " + currentGeneration + " diversity: " + Math.round(sumDiversity) +"%");
 				sumDiversity = 0;
 			}
 			updateInfo();
@@ -409,6 +409,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		// calculate entropy
 		double entropy = 0;
 		double maxEntropy = populationSize * Math.log(populationSize);
+		double minEntropy = buckets.size() * (populationSize/buckets.size());
 		String bucketPrint = "|";
 		for(int bucketNo = 0; bucketNo < buckets.size(); bucketNo++) {
 			ArrayList<Solution> bucket = buckets.get(bucketNo);
@@ -417,7 +418,7 @@ public class GeneticAlgorithm extends SearchMethod {
 				entropy += bucket.size() * Math.log(bucket.size());
 			}
 		}
-		double diversity = (1 - entropy / maxEntropy)*100;
+		double diversity = (1 - (entropy-minEntropy) / (maxEntropy-minEntropy))*100;
 		//System.out.println(bucketPrint);
 		//System.out.println("Diversity: " + Math.round(Math.round(diversity)) + "%\tEntropy: " + entropy + "\tMax Entropy: " + maxEntropy);
 		
