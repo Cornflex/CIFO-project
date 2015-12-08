@@ -26,6 +26,7 @@ public class GeneticAlgorithm extends SearchMethod {
 	protected boolean useElitism;
 	protected int eliteNum;
 	protected XOOperator[] crossoverOperators;
+	protected double averageFitness;
 
 	// Fields for dynamic population sizes
 	protected int useDynamicPopulationSize; // set to negative to disable dyn pop
@@ -81,13 +82,15 @@ public class GeneticAlgorithm extends SearchMethod {
 	
 	public void evolve() {
 		Arrays.sort(population);
+		averagePopulationFitness();
 		while (currentGeneration <= numberOfGenerations) {
 			Solution[] offspring = new Solution[populationSize];
 			for (int k = 0; k < population.length; k++) {
 				int[] parents = selectParents();
 				offspring[k] = applyCrossover(parents);
 
-				offspring[k] = offspring[k].applyMutation();
+				//offspring[k] = offspring[k].applyMutationGrid(mutationProbability,averageFitness);
+				offspring[k] = offspring[k].applyMutation(mutationProbability);
  				offspring[k].evaluate();
 			}
 			Arrays.sort(offspring);
@@ -122,16 +125,18 @@ public class GeneticAlgorithm extends SearchMethod {
 	}
 	
 	
-	public double averagePopulationFitness(Solution[] pop){
-		double averageFitness = 0;
-		for(int i=0; i<pop.length;i++){
-			averageFitness+=pop[i].getFitness();
+	public void averagePopulationFitness(){
+		double fitnessSum = 0;
+		for(int i=0; i<population.length;i++){
+			fitnessSum+=population[i].getFitness();
 		}
-		averageFitness=averageFitness/pop.length;
-		return averageFitness;
-	}
 		
-			
+		averageFitness=fitnessSum/population.length;
+	
+	}	
+	public double getAverageFitness() {
+		return averageFitness;
+	}		
 	
 	//can be deleted
 	public void printPopulationFitness(Solution[] pop){
@@ -234,7 +239,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		MutationOperator[] muOps = {MutationOperator.orderFlip, MutationOperator.locationFlip, MutationOperator.manyValueChange, MutationOperator.manyValueAddSubtract};
 		for(int i = 0; i < count; i++) {
 			// generate a new individual from the best, based on mutation
-			newPopulation[i] = bestIndividuals[i].applyMutationTest(0.3, muOps);
+			newPopulation[i] = bestIndividuals[i].applyMutation(0.3, muOps);
 		}
 		for(int i = count; i < newPopulation.length; i++) {
 			newPopulation[i] = population[i-count];
