@@ -24,6 +24,7 @@ public class GeneticAlgorithm extends SearchMethod {
 	protected boolean useElitism, useDynamicPopulationSize;
 	protected int eliteNum;
 	protected XOOperator[] crossoverOperators;
+	protected double averageFitness;
 
 	// Fields for dynamic population sizes
 	protected double lastDelta;
@@ -199,7 +200,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		Solution[] bestIndividuals = getBest(population, count);
 		for(int i = 0; i < count; i++) {
 			// generate a new individual from the best, based on mutation
-			newPopulation[i] = bestIndividuals[i].applyMutationTest(0.05);
+			newPopulation[i] = bestIndividuals[i].applyMutation(0.05);
 		}
 		for(int i = count; i < newPopulation.length; i++) {
 			newPopulation[i] = population[i-count];
