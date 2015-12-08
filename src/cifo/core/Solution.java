@@ -171,10 +171,10 @@ public class Solution implements Comparable<Solution> {
 					temp=applyMutationOneValueChange(i);
 					break;
 				case orderFlip:
-					temp=applyMutationFlipOrder(i/VALUES_PER_TRIANGLE);
+					temp=applyMutationFlipOrder(i);
 					break;
 				case locationFlip:
-					temp=applyMutationFlipLocation(i/VALUES_PER_TRIANGLE);
+					temp=applyMutationFlipLocation(i);
 					break;
 				case oneValueOccasionalFlipLocation:
 					temp=oneValueOccasionalFlipLocation(i);
