@@ -12,7 +12,7 @@ public class Benchmark {
 	public static void main(String args[]) {
 		int fraction = 1;
 		int denominator = 1;
-		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 1, 1000);
+		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 1, 2000);
 		parameterSets = ParameterSet.getPortion(fraction, denominator, fullSet);
 		System.out.println("Benchmark started. Testing " + parameterSets.length +" out of " + fullSet.length + " parameter combinations at fraction " + fraction + " of " + denominator);
 		Main.runInBenchmarkMode(1, parameterSets[0]);
@@ -60,14 +60,14 @@ public class Benchmark {
 		}
 
 		public static ParameterSet[] generateParameterSets(Main.SearchMethods SEARCH_METHOD, int NUMBER_OF_RUNS, int NUMBER_OF_GENERATIONS) {
-			int[] populationSizes = {90};
+			int[] populationSizes = {70};
 			double[] mutationProbablilities = {0.1};
 			int[] neighborhoodSizes = {4};
-			int[] tournamentSizes = {4};
+			int[] tournamentSizes = {6};
 			int[] triangleNumbers = {100};
 			XOOperator[][] xoOperatorCombinations = {{XOOperator.TRIANGLE_BASED}};
-			MutationOperator[][] muOperatorCombinations = {{MutationOperator.oneValue}};
-			int[] useDynamicPopulationSize = {-1};
+			MutationOperator[][] muOperatorCombinations = {{MutationOperator.oneValue, MutationOperator.locationFlip}};
+			int[] useDynamicPopulationSize = {150};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
 			for(int i = 0; i < populationSizes.length; i++) {
