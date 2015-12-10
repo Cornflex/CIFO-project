@@ -65,8 +65,8 @@ public class Benchmark {
 			int[] neighborhoodSizes = {4};
 			int[] tournamentSizes = {6};
 			int[] triangleNumbers = {100};
-			XOOperator[][] xoOperatorCombinations = {{XOOperator.TRIANGLE_BASED}};
-			MutationOperator[][] muOperatorCombinations = {{MutationOperator.oneValue, MutationOperator.locationFlip}};
+			XOOperator[][] xoOperatorCombinations = {{XOOperator.TRIANGLE_BASED},{XOOperator.ALTERNATING},{XOOperator.COLOR_BASED},{XOOperator.LAYER_BASED},{XOOperator.MULTI_TRIANGLE_BASED},{XOOperator.MULTI_RANDOM_FEATURE},{XOOperator.VERTEX_BASED}};
+			MutationOperator[][] muOperatorCombinations = {{MutationOperator.oneValue},{MutationOperator.addorSubtractValues},{MutationOperator.deltaBased},{MutationOperator.locationFlip},{MutationOperator.manyValueAddSubtract},{MutationOperator.manyValueChange},{MutationOperator.oneValueOccasionalFlipLocation},{MutationOperator.orderFlip},{MutationOperator.oneValue, MutationOperator.locationFlip}};
 			int[] useDynamicPopulationSize = {150};
 			
 			ArrayList<ParameterSet> parameterSet = new ArrayList<>();
