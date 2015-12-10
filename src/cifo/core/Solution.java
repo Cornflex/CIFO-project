@@ -17,7 +17,7 @@ public class Solution implements Comparable<Solution> {
 	protected double fitness;
 	protected Random r;
 	
-	public enum MutationOperator {oneValue, orderFlip, locationFlip, oneValueOccasionalFlipLocation, addorSubtractValues, deltaBased, manyValueChange, manyValueAddSubtract};
+	public enum MutationOperator {ONE_VALUE, ORDER_FLIP, LOCATION_FLIP, ONE_VALUE_OCCASIONAL_FLIP_LOCATION, ADD_OR_SUBTRACT_VALUES, DELTA_BASED, MANY_VALUE_CHANGE, MANY_VALUE_ADD_OR_SUBTRACT};
 	protected MutationOperator[] mutationOperators;
 
 	public Solution(ProblemInstance instance) {
@@ -168,28 +168,28 @@ public class Solution implements Comparable<Solution> {
 				//if probability condition met, randomly apply one of the mutation methods entered as parameters
 				MutationOperator muOp = muOps[r.nextInt(muOps.length)];
 				switch(muOp) {
-				case oneValue:
+				case ONE_VALUE:
 					temp=applyMutationOneValueChange(i);
 					break;
-				case orderFlip:
+				case ORDER_FLIP:
 					temp=applyMutationFlipOrder(i);
 					break;
-				case locationFlip:
+				case LOCATION_FLIP:
 					temp=applyMutationFlipLocation(i);
 					break;
-				case oneValueOccasionalFlipLocation:
+				case ONE_VALUE_OCCASIONAL_FLIP_LOCATION:
 					temp=oneValueOccasionalFlipLocation(i);
 					break;	
-				case addorSubtractValues:
+				case ADD_OR_SUBTRACT_VALUES:
 					temp=applyAddorSubtractValues(i);
 					break;
-				case deltaBased:
+				case DELTA_BASED:
 					temp=applyDeltaBased(i);
 					break;
-				case manyValueChange:
+				case MANY_VALUE_CHANGE:
 					temp=applyMutationManyValueChange(i);
 					break;
-				case manyValueAddSubtract:
+				case MANY_VALUE_ADD_OR_SUBTRACT:
 					temp=applyManyAddorSubtractValues(i);
 					break;
 				}								

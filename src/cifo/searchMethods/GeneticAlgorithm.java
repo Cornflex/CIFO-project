@@ -232,7 +232,7 @@ public class GeneticAlgorithm extends SearchMethod {
 		populationSize += count;
 		Solution[] newPopulation = new Solution[populationSize];
 		Solution[] bestIndividuals = getBest(population, count);
-		MutationOperator[] muOps = {MutationOperator.orderFlip, MutationOperator.locationFlip, MutationOperator.manyValueChange, MutationOperator.manyValueAddSubtract};
+		MutationOperator[] muOps = {MutationOperator.ORDER_FLIP, MutationOperator.LOCATION_FLIP, MutationOperator.MANY_VALUE_CHANGE, MutationOperator.MANY_VALUE_ADD_OR_SUBTRACT};
 		for(int i = 0; i < count; i++) {
 			// generate a new individual from the best, based on mutation
 			newPopulation[i] = bestIndividuals[i].applyMutation(0.3, muOps);

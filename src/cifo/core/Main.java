@@ -39,7 +39,7 @@ public class Main {
 	public static long startTime;
 	
 	public static XOOperator[] CROSSOVER_OPERATORS = {XOOperator.ALTERNATING, XOOperator.LAYER_BASED};
-	public static MutationOperator[] MUTATION_OPERATORS = {MutationOperator.oneValue, MutationOperator.locationFlip};
+	public static MutationOperator[] MUTATION_OPERATORS = {MutationOperator.ONE_VALUE, MutationOperator.LOCATION_FLIP};
 	public static void main(String[] args) {
 		run();
 	}
