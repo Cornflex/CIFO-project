@@ -40,7 +40,7 @@ public class GeneticAlgorithm extends SearchMethod {
 	public GeneticAlgorithm() {
 		instance = new ProblemInstance(Main.NUMBER_OF_TRIANGLES);
 		populationSize = Main.POPULATION_SIZE;
-		minPopulationSize = 10;
+		minPopulationSize = 30;
 		maxPopulationSize = 90;
 		numberOfGenerations = Main.NUMBER_OF_GENERATIONS;
 		mutationProbability = Main.MUTATION_PROBABILIY;
