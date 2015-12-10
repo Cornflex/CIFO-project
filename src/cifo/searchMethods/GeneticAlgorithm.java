@@ -111,12 +111,7 @@ public class GeneticAlgorithm extends SearchMethod {
 					System.out.println(debug + "\t" + populationSizeChange + this.populationSize);
 				}
 			}			
-			sumDiversity += calculateGenotypicEntropy(population);
-			if(currentGeneration % period == 0) {
-				sumDiversity = sumDiversity / period;
-				System.out.println("Gen " + currentGeneration + " diversity: " + Math.round(sumDiversity) +"%");
-				sumDiversity = 0;
-			}
+			Main.diversityCurve.add(Math.round(calculateGenotypicEntropy(population)));
 			updateInfo();
 			currentGeneration++;
 		}

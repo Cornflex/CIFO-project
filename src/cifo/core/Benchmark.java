@@ -2,17 +2,28 @@ package cifo.core;
 
 import java.util.ArrayList;
 
+import cifo.core.Main.SearchMethods;
 import cifo.core.Solution.MutationOperator;
 import cifo.searchMethods.GeneticAlgorithm.XOOperator;
 
 public class Benchmark {
-	private static String results = "\nSEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,mean,stdDev,best,worst,XO,DynPop,TimeInSecs,MuOps";
+	private static String results = "\nSEARCH_METHOD,NUMBER_OF_TRIANGLES,NUMBER_OF_RUNS,NUMBER_OF_GENERATIONS,POPULATION_SIZE,NEIGHBORHOOD_SIZE,MUTATION_PROBABILIY,TOURNAMENT_SIZE,mean,stdDev,best,worst,XO,DynPop,TimeInSecs,MuOps,Diversity ...";
 	private static ParameterSet[] parameterSets;
 	
 	public static void main(String args[]) {
-		int fraction = 1;
-		int denominator = 1;
-		ParameterSet[] fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 1, 2000);
+		boolean finalRun = false;
+		ParameterSet[] fullSet;
+		
+		if(finalRun) {
+			fullSet = finalRun();
+		}
+		else {
+			fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 5, 30);
+		}
+		
+		int fraction = 9;
+		int denominator = 9;
+		
 		parameterSets = ParameterSet.getPortion(fraction, denominator, fullSet);
 		System.out.println("Benchmark started. Testing " + parameterSets.length +" out of " + fullSet.length + " parameter combinations at fraction " + fraction + " of " + denominator);
 		Main.runInBenchmarkMode(1, parameterSets[0]);
@@ -105,5 +116,16 @@ public class Benchmark {
 			}
 			return setsFraction;
 		}
+	}
+	
+	public static ParameterSet[] finalRun() {
+		ArrayList<ParameterSet> paramSets = new ArrayList<>();
+		
+		XOOperator[] xoOps = {};
+		MutationOperator[] muOps = {};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+		
+		ParameterSet[] fullSet = new ParameterSet[paramSets.size()];
+		return paramSets.toArray(fullSet);
 	}
 }

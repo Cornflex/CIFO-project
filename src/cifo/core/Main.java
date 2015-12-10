@@ -2,6 +2,9 @@ package cifo.core;
 
 import cifo.utils.Statistics;
 import cifo.searchMethods.GeneticAlgorithm.XOOperator;
+
+import java.util.ArrayList;
+
 import cifo.core.Solution.MutationOperator;
 import gd.gui.GeneticDrawingApp;
 
@@ -26,6 +29,8 @@ public class Main {
 	public static boolean USE_ELITISM = true;
 	public static double ELITE_PROPORTION = 0.05;
 	public static int USE_DYNAMIC_POPULATION_SIZE = -1;
+	
+	public static ArrayList<Long> diversityCurve = new ArrayList<>();
 	
 	public static int benchmarkPosition = 0;
 
@@ -121,6 +126,10 @@ public class Main {
 			muOps += muOp.name() + "/";
 		}
 		muOps = muOps.substring(0, muOps.length() - 1);
+		String diversity = "";
+		for(Long diversityValue : diversityCurve) {
+			diversity += diversityValue +",";
+		}
 		return(
 				SEARCH_METHOD + ","
 				+ NUMBER_OF_TRIANGLES + ","
@@ -137,7 +146,8 @@ public class Main {
 				+ xoOps + ","
 				+ USE_DYNAMIC_POPULATION_SIZE + ","
 				+ Math.round((System.currentTimeMillis() - startTime) / 1000) + ","
-				+ muOps
+				+ muOps + ","
+				+ diversity
 		);
 		//System.out.printf("Results\t\t%.2f +- %.2f\t%.2f\t%.2f\n", mean, stdDev, best, worst);
 	}
