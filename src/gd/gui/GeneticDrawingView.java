@@ -162,7 +162,7 @@ public class GeneticDrawingView extends FrameView {
 		startEvolution = new javax.swing.JToggleButton();
 		startEvolution.setVisible(false);
 		targetImageLabel = new javax.swing.JLabel();
-		JFreeChart chart = ChartFactory.createXYLineChart("Fitness versus Generation", "Generation", "Fitness",
+		JFreeChart chart = ChartFactory.createXYLineChart("Fitness versus Generation " + Main.benchmarkPosition, "Generation", "Fitness",
 				new XYSeriesCollection(new XYSeries("")), org.jfree.chart.plot.PlotOrientation.VERTICAL, false, false,
 				false);
 		chartPanel = new ChartPanel(chart);

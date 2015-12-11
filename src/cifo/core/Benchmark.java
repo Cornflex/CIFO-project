@@ -11,33 +11,33 @@ public class Benchmark {
 	private static ParameterSet[] parameterSets;
 	
 	public static void main(String args[]) {
-		boolean finalRun = false;
+		boolean finalRun = true;
 		ParameterSet[] fullSet;
 		
-		if(finalRun) {
-			fullSet = finalRun();
+		if(!finalRun) {
+			fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 3, 3);
 		}
 		else {
-			fullSet = ParameterSet.generateParameterSets(Main.SearchMethods.GA, 5, 30);
+			fullSet = finalRun();
 		}
 		
-		int fraction = 9;
-		int denominator = 9;
+		int fraction = 1;
+		int denominator = 1;
 		
 		parameterSets = ParameterSet.getPortion(fraction, denominator, fullSet);
 		System.out.println("Benchmark started. Testing " + parameterSets.length +" out of " + fullSet.length + " parameter combinations at fraction " + fraction + " of " + denominator);
+		System.out.println(results);
 		Main.runInBenchmarkMode(1, parameterSets[0]);
 	}
 	
 	public static void continueAt(int benchmarkPosition, String results) {
-		System.out.print(".");
-		Benchmark.results += "\n" + results;
+		System.out.println(results);
 		if(benchmarkPosition<parameterSets.length) { // check if out of bounds
 			Main.runInBenchmarkMode(benchmarkPosition + 1, parameterSets[benchmarkPosition]);
 		}
 		else {
 			// save results
-			System.out.println(Benchmark.results);
+			//System.out.println(Benchmark.results);
 			return;
 		}
 	}
@@ -123,6 +123,70 @@ public class Benchmark {
 		
 		XOOperator[] xoOps = {};
 		MutationOperator[] muOps = {};
+		
+		// We’re doing this manually now. So for each combination we want, we copy and paste the three lines below and changing the parameters
+
+		// All mutation combinations
+		// List of all available mu ops (i renamed them): {MutationOperator.ONE_VALUE},{MutationOperator.ADD_OR_SUBTRACT_VALUES},{MutationOperator.DELTA_BASED},{MutationOperator.LOCATION_FLIP},{MutationOperator.MANY_VALUE_ADD_OR_SUBTRACT},{MutationOperator.MANY_VALUE_CHANGE},{MutationOperator.ONE_VALUE_OCCASIONAL_FLIP_LOCATION},{MutationOperator.ORDER_FLIP},{MutationOperator.ONE_VALUE, MutationOperator.LOCATION_FLIP}
+
+		xoOps = new XOOperator[]{XOOperator.TRIANGLE_BASED};
+		muOps = new MutationOperator[]{MutationOperator.ONE_VALUE};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		muOps = new MutationOperator[]{MutationOperator.ONE_VALUE, MutationOperator.LOCATION_FLIP};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		muOps = new MutationOperator[]{MutationOperator.ONE_VALUE,MutationOperator.ORDER_FLIP};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		muOps = new MutationOperator[]{MutationOperator.ADD_OR_SUBTRACT_VALUES};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		muOps = new MutationOperator[]{MutationOperator.MANY_VALUE_ADD_OR_SUBTRACT};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		muOps = new MutationOperator[]{MutationOperator.MANY_VALUE_CHANGE};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		muOps = new MutationOperator[]{MutationOperator.ONE_VALUE, MutationOperator.ORDER_FLIP, MutationOperator.LOCATION_FLIP};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		// All crossover combinations
+		// VERTEX_BASED, COLOR_BASED, TRIANGLE_BASED, MULTI_TRIANGLE_BASED, MULTI_RANDOM_FEATURE, LAYER_BASED, ALTERNATING
+
+		xoOps = new XOOperator[]{XOOperator.TRIANGLE_BASED};
+		muOps = new MutationOperator[]{MutationOperator.ONE_VALUE};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		xoOps = new XOOperator[]{XOOperator.VERTEX_BASED};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		xoOps = new XOOperator[]{XOOperator.COLOR_BASED};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		xoOps = new XOOperator[]{XOOperator.MULTI_TRIANGLE_BASED};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		xoOps = new XOOperator[]{XOOperator.MULTI_RANDOM_FEATURE};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		xoOps = new XOOperator[]{XOOperator.LAYER_BASED};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		xoOps = new XOOperator[]{XOOperator.ALTERNATING};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		xoOps = new XOOperator[]{XOOperator.TRIANGLE_BASED, XOOperator.ALTERNATING};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		xoOps = new XOOperator[]{XOOperator.VERTEX_BASED, XOOperator.COLOR_BASED};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
+
+		// Dyn pop versus no dyn pop
+		xoOps = new XOOperator[]{XOOperator.TRIANGLE_BASED};
+		muOps = new MutationOperator[]{MutationOperator.ONE_VALUE, MutationOperator.ONE_VALUE};
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, 0, muOps, 4));
+		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, 150, muOps, 4));
 		paramSets.add(new ParameterSet(SearchMethods.GA, 100, 3, 2000, 90, 0.01, 6, xoOps, -1, muOps, 4));
 		
 		ParameterSet[] fullSet = new ParameterSet[paramSets.size()];

@@ -63,9 +63,9 @@ public class Main {
 		Main.CROSSOVER_OPERATORS = parameterSet.CROSSOVER_OPERATORS;
 		Main.MUTATION_OPERATORS = parameterSet.MUTATION_OPERATORS;
 		Main.USE_DYNAMIC_POPULATION_SIZE = parameterSet.USE_DYNAMIC_POPULATION_SIZE;
-		
+		diversityCurve = new ArrayList<>();
 		// set other parameters
-		KEEP_WINDOWS_OPEN = false;
+		KEEP_WINDOWS_OPEN = true;
 		printFlag = false;
 		bestSolutions = new Solution[NUMBER_OF_RUNS];
 		bestFitness = new double[NUMBER_OF_RUNS];
@@ -87,11 +87,13 @@ public class Main {
 			System.out.println();
 		}
 		currentRun++;
+		ProblemInstance.view.getFittestDrawingView().dispose();
 		if (KEEP_WINDOWS_OPEN == false) {
-			ProblemInstance.view.getFittestDrawingView().dispose();
 			ProblemInstance.view.getFrame().dispose();
 		}
 		if (currentRun < NUMBER_OF_RUNS) {
+			ProblemInstance.view.getFrame().dispose();
+			diversityCurve = new ArrayList<>();
 			run();
 		} else if(benchmarkPosition > 0) {
 			Benchmark.continueAt(benchmarkPosition, resultsAsCSV());
